@@ -33,7 +33,13 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+    <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-dependencies</artifactId>
+            <version>2023.0.0</version> <!-- Replace with the version you are using -->
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
 		
 	</dependencies>
 
