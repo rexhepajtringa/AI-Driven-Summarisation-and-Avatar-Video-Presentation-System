@@ -25,3 +25,8 @@ button {
     padding: 10px 20px;
     cursor: pointer;
 }
+
+.summary-container {
+    margin-top: 20px;
+}
+

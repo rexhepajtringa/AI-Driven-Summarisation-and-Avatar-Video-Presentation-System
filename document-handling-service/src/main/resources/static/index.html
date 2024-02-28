@@ -6,13 +6,23 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h2>Document Handler</h2>
-        <textarea id="textInput" placeholder="Enter text or upload a document"></textarea>
-        <input type="file" id="fileInput" accept=".pdf, .doc, .docx">
-        <button id="submitBtn">Submit</button>
-        <textarea id="output" placeholder="Extracted text will appear here" readonly></textarea>
+  <div class="container">
+    <h2>Document Handler</h2>
+    <textarea id="textInput" placeholder="Enter text or upload a document"></textarea>
+    <input type="file" id="fileInput" accept=".pdf, .doc, .docx">
+    <button id="uploadBtn">Upload</button> <!-- Changed from submitBtn to uploadBtn -->
+    <textarea id="output" placeholder="Extracted text will appear here" readonly></textarea>
+    <button id="summarizeBtn">Summarize</button> <!-- New Button for summarizing -->
+    <div class="summary-container">
+        <h3>Summary</h3>
+        <textarea id="summaryOutput" placeholder="Summary will appear here" readonly></textarea>
     </div>
-    <script src="script.js"></script>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
+
+<script type="module" src="script.js"></script>
+    <!-- Add these scripts to your HTML for SockJS and STOMP -->
+
+    
 </body>
 </html>

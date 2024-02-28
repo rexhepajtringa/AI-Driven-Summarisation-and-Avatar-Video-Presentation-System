@@ -2,7 +2,9 @@ package com.example.summaryservice;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,9 +16,11 @@ import java.util.Map;
 public class GptService {
 
     private final RestTemplate restTemplate;
-    // Updated to use the chat completions endpoint
     private final String openAiUrl = "https://api.openai.com/v1/chat/completions";
     private final String apiKey = "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"; // Ensure to secure your API key
+    
+    @Autowired
+    private SummaryWebSocketService summaryWebSocketService; // WebSocket service to send summaries to the frontend
 
     public GptService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
@@ -27,22 +31,24 @@ public class GptService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-        // Use ObjectMapper for constructing the JSON body
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(Map.of(
-        	    "model", "gpt-3.5-turbo",
-        	    "messages", List.of(
-        	        Map.of("role", "system", "content", "Summarize the following text:"),
-        	        Map.of("role", "user", "content", inputText)
-        	    )
-        	));
+            "model", "gpt-3.5-turbo",
+            "messages", List.of(
+                Map.of("role", "system", "content", "Summarize the following text:"),
+                Map.of("role", "user", "content", inputText)
+            )
+        ));
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
         ResponseEntity<String> response = restTemplate.postForEntity(openAiUrl, request, String.class);
-        System.out.println("Raw response: " + response.getBody());
-       
+        
         String summary = extractContentFromResponse(response.getBody());
+        
+        // Send summary to frontend via WebSocket
+        summaryWebSocketService.sendSummary(summary);
+        
         return summary;
     }
     
