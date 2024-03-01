@@ -7,22 +7,36 @@
 </head>
 <body>
   <div class="container">
-    <h2>Document Handler</h2>
-    <textarea id="textInput" placeholder="Enter text or upload a document"></textarea>
-    <input type="file" id="fileInput" accept=".pdf, .doc, .docx">
-    <button id="uploadBtn">Upload</button> <!-- Changed from submitBtn to uploadBtn -->
-    <textarea id="output" placeholder="Extracted text will appear here" readonly></textarea>
-    <button id="summarizeBtn">Summarize</button> <!-- New Button for summarizing -->
+    <h2>Summarize Reports</h2>
+       <input type="file" id="fileInput" accept=".pdf, .doc, .docx">
+    <button id="uploadBtn">Upload and Extract Text</button>
+    <textarea id="output" placeholder="Extracted text will appear here or write your text"></textarea>
+    <div class="customization-container">
+    <label for="toneSelect">Tone of summary:</label>
+    <select id="toneSelect">
+        <option value="professional">Professional</option>
+        <option value="casual">Casual</option>
+        <option value="enthusiastic">Enthusiastic</option>
+        <option value="neutral" selected>Neutral</option>
+    </select>
+
+    <label for="lengthInput">Length of summary (sentences):</label>
+    <input type="number" id="lengthInput" placeholder="Enter number of sentences" min="1" max="100">
+
+    <label for="includeReferences">Include references:</label>
+    <input type="checkbox" id="includeReferences" checked>
+</div>
+    
+    
+    <button id="summarizeBtn">Summarize</button>
     <div class="summary-container">
         <h3>Summary</h3>
-        <textarea id="summaryOutput" placeholder="Summary will appear here" readonly></textarea>
+        <textarea id="summaryOutput" placeholder="Summary will appear here"></textarea>
     </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
 
-<script type="module" src="script.js"></script>
-    <!-- Add these scripts to your HTML for SockJS and STOMP -->
+<script type="module" src="script.js" defer></script>
 
-    
 </body>
 </html>

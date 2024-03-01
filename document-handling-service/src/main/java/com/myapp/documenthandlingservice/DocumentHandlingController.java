@@ -40,7 +40,7 @@ public class DocumentHandlingController {
                  throw new IllegalArgumentException("Unsupported document type.");
              }
              System.out.println(extractedText);
-             kafkaTemplate.send("extractedText", extractedText);
+           //  kafkaTemplate.send("extractedText", extractedText);
             return ResponseEntity.ok(extractedText);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to process the PDF file");
@@ -50,10 +50,7 @@ public class DocumentHandlingController {
     @PostMapping("/uploadText")
     public ResponseEntity<String> uploadText(@RequestBody String text) {
         try {
-            // Here, you might want to do some validation or cleaning of the text
-            // Assuming the text is valid and clean, send it to the text receiver
-//            messagePublisher.sendText(text);
-            return ResponseEntity.ok("Text received and enqueued for processing");
+            return ResponseEntity.ok(text);
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body("Failed to process the text: " + e.getMessage());
         }

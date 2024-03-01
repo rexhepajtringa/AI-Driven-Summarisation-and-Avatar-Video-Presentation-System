@@ -1,8 +1,9 @@
 package com.example.summaryservice;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
+import java.util.Map;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,13 +17,13 @@ public class GptController {
     }
     
     @PostMapping("/summarize")
-    public String summarize(@RequestBody(required=false) String text) {
+    public ResponseEntity<?> summarize(@RequestBody SummaryRequest summaryRequest) {
         try {
-            return gptService.summarizeText(text);
+            String summary = gptService.summarizeText(summaryRequest.getText(), summaryRequest.getTone(), summaryRequest.getSentenceLength(), summaryRequest.getIncludeReferences());
+            return ResponseEntity.ok(summary); 
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error: " + e.getMessage();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
         }
     }
-    
 }
