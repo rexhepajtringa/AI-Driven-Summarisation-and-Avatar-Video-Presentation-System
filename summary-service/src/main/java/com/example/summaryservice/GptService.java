@@ -30,7 +30,7 @@ public class GptService {
 
         int maxTokens = sentenceLength != null ? sentenceLength * 50 : 200; 
         
-        String prompt = String.format("Summarize the following text in a %s tone:", tone);
+        String prompt = String.format("You are a summarizer that prepares text as scripts for video presentations. Summarize the following text in a %s tone:", tone);
         
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", prompt));
