@@ -86,3 +86,39 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => console.error('Error:', error));
     }
 });
+
+document.getElementById('speakBtn').addEventListener('click', function() {
+    var text = document.getElementById("summaryOutput").value;
+    if (!text) {
+        alert("Please generate a summary to speak.");
+        return;
+    }
+    sendTextToSpeech(text);
+});
+
+function sendTextToSpeech(text) {
+    var url = "http://localhost:8765/TEXT-TO-VOICE-SERVICE/text-to-speech";
+    var payload = { text: text };
+
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    })
+  //  .then(response => response.blob())
+  //  .then(blob => {
+  //      var url = window.URL.createObjectURL(blob);
+ //       var audio = new Audio(url);
+  //      audio.play();
+  //  })
+  //  .catch(error => console.error('Error:', error));
+    .then(response => response.text())
+        .then(data => {
+            document.getElementById("output").value = data;
+            autoGrowTextArea(document.getElementById("output"));
+        })
+        .catch(error => console.error('Error:', error));
+}
+
