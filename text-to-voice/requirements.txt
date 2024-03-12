@@ -1,0 +1,4 @@
+Flask
+gTTS
+py_eureka_client
+Flask-Cors
