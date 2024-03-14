@@ -1,12 +1,14 @@
-version: '3'
+version: '3.8'
+
 services:
-  text-to-voice-service:
+  web:
     build: .
-    ports:
-      - "5000:5000"
     volumes:
-      - .:/app
+      - .:/app  # Mounts the current directory to /app in the container
+      - ./audio_files:/app/audio_files  # Ensures audio_files is persistent
+    ports:
+      - "5000:5000"  # Exposes port 5000 for the web service
     environment:
-      - FLASK_ENV=development
       - FLASK_APP=app.py
-    command: flask run --host=0.0.0.0 --port=5000 --reload
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --reload 
