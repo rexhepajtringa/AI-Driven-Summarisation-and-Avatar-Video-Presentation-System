@@ -30,9 +30,23 @@
     
     <button id="summarizeBtn">Summarize</button>
     <div class="summary-container">
-        <h3>Summary</h3>
-        <textarea id="summaryOutput" placeholder="Summary will appear here"></textarea>
+    <h3>Summary</h3>
+    <textarea id="summaryOutput" placeholder="Summary will appear here"></textarea>
+    <button id="speakBtn">Speak</button>
+    
+    <!-- Audio player container -->
+    <div id="audioPlayerContainer" style="display:none;">
+        <audio id="audioPlayer" controls></audio>
+        
+        <label for="imageInput">Choose an image:</label>
+<input type="file" id="imageInput" accept="image/*">
+<button id="uploadAvatarBtn" disabled>Upload for Avatar Video</button>
+
+<video id="outputVideo" width="640" height="480" controls> </video>
+
+        
     </div>
+</div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client/dist/sockjs.min.js"></script>
 

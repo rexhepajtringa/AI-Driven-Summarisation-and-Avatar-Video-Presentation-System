@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  avatar-video-service:
+    build: .
+    volumes:
+      - .:/app  # Mounts the current directory to /app in the container
+      - ./uploads:/app/uploads  # Ensures uploads directory is persistent
+    ports:
+      - "5020:5020"  # Exposes port 5020 for the avatar-video-service
+    environment:
+      - GOOEY_API_KEY=sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --port=5020 --reload 
