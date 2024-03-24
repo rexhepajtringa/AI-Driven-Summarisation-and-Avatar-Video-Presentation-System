@@ -1,0 +1,14 @@
+.outer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #152128f0;
+    height: 100vh;
+    width: 100vw;
+    color: rgb(191, 210, 210);
+  }
+  
+  .custom-slider {
+    width: 70%; 
+    margin: 0 auto;
+  }

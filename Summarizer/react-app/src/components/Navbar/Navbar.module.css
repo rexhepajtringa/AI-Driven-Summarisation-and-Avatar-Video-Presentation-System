@@ -1,0 +1,252 @@
+.menufilledIcon {
+    height: 1.5rem;
+    width: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .icon,
+  .iconbutton {
+    height: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .iconbutton {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 100px;
+    overflow: hidden;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+  .title {
+    margin: 0;
+    align-self: stretch;
+    position: relative;
+    font-size: inherit;
+    letter-spacing: 0.15px;
+    line-height: 160%;
+    font-weight: 500;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .leftSide,
+  .typography {
+    display: flex;
+    justify-content: flex-start;
+  }
+  .typography {
+    flex: 1;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .leftSide {
+    width: 84.313rem;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 71.25rem 0 0;
+    box-sizing: border-box;
+    gap: 1rem;
+    max-width: 100%;
+  }
+  .minHeight {
+    height: 4rem;
+    width: 0;
+    position: relative;
+    display: none;
+  }
+  .starsharpIcon {
+    height: 1.5rem;
+    width: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .icon1 {
+    height: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .iconbutton1 {
+    height: 2.5rem;
+    width: 2.5rem;
+    border-radius: 100px;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    box-sizing: border-box;
+  }
+  .paper,
+  .stack,
+  .toolbar {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+  .stack {
+    height: 2.5rem;
+    width: 2.5rem;
+    display: none;
+  }
+  .paper,
+  .toolbar {
+    overflow: hidden;
+    display: flex;
+    box-sizing: border-box;
+    max-width: 100%;
+  }
+  .toolbar {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+  }
+  .paper {
+    width: 100%;
+    margin: 0 !important;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #f5f5f5;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.12), 0 4px 5px rgba(0, 0, 0, 0.14),
+      0 2px 4px -1px rgba(0, 0, 0, 0.2);
+    padding: 0 0 0.688rem;
+  }
+  .title1,
+  .title2 {
+    margin: 0;
+    height: 2.25rem;
+    position: relative;
+    font-size: inherit;
+    letter-spacing: 0.15px;
+    line-height: 150%;
+    font-weight: 400;
+    font-family: inherit;
+    display: inline-block;
+    z-index: 1;
+  }
+  .title1 {
+    width: 5.125rem;
+    flex-shrink: 0;
+  }
+  .title2 {
+    flex: 1;
+  }
+  .frameWrapper,
+  .titleParent {
+    display: flex;
+    align-items: flex-start;
+  }
+  .titleParent {
+    align-self: stretch;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  .frameWrapper {
+    width: 11.125rem;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 0 0.313rem;
+    box-sizing: border-box;
+  }
+  .button {
+    align-self: stretch;
+    height: 3.063rem;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .buttonInstance {
+    width: 7.875rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding: 0.063rem 0 0;
+    box-sizing: border-box;
+  }
+  .button1 {
+    height: 3.063rem;
+    flex: 1;
+    cursor: pointer;
+    z-index: 1;
+  }
+  .paperInstance,
+  .paperParent {
+    display: flex;
+    flex-direction: row;
+  }
+  .paperInstance {
+    width: 18.125rem;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 1.5rem;
+  }
+  .paperParent {
+    align-self: stretch;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0.875rem 1.25rem 0.688rem 33.375rem;
+    box-sizing: border-box;
+    position: sticky;
+    gap: 19.063rem;
+    top: 0;
+    z-index: 99;
+    max-width: 100%;
+    text-align: left;
+    font-size: 1.25rem;
+    color: rgba(0, 0, 0, 0.87);
+    font-family: Roboto;
+  }
+  @media screen and (max-width: 1200px) {
+    .leftSide {
+      padding-right: 35.625rem;
+      box-sizing: border-box;
+    }
+    .paperParent {
+      gap: 19.063rem 9.5rem;
+      padding-left: 16.688rem;
+      box-sizing: border-box;
+    }
+  }
+  @media screen and (max-width: 750px) {
+    .leftSide {
+      padding-right: 17.813rem;
+      box-sizing: border-box;
+    }
+    .titleParent {
+      display: none;
+    }
+    .frameWrapper {
+      width: 0;
+    }
+    .paperParent {
+      gap: 19.063rem 4.75rem;
+      padding-left: 8.313rem;
+      box-sizing: border-box;
+    }
+  }
+  @media screen and (max-width: 450px) {
+    .leftSide {
+      padding-right: 1.25rem;
+      box-sizing: border-box;
+    }
+    .paperParent {
+      gap: 19.063rem 2.375rem;
+      padding-left: 1.25rem;
+      box-sizing: border-box;
+    }
+  }
+  

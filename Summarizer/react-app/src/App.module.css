@@ -1,0 +1,33 @@
+.home,
+.homeInner {
+  display: flex;
+  box-sizing: border-box;
+}
+.homeInner {
+  width: 87.125rem;
+  flex-direction: row;
+  justify-content: center;
+  margin: auto;;
+  max-width: 100%;
+}
+.home {
+  width: 100%;
+  position: relative;
+  background: linear-gradient(180deg, #fff, #7488ba);
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 0 0 20.25rem;
+  gap: 4.125rem;
+  letter-spacing: normal;
+}
+@media screen and (max-width: 750px) {
+  .home {
+    gap: 2.063rem 4.125rem;
+  }
+}
+@media screen and (max-width: 450px) {
+  .home {
+    gap: 1rem 4.125rem;
+  }
+}
