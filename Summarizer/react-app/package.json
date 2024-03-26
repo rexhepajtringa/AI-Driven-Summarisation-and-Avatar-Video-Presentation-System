@@ -20,7 +20,8 @@
     "react-audio-play": "^0.0.19",
     "react-bootstrap": "^2.10.2",
     "react-dom": "^18.2.0",
-    "react-dropzone": "^14.2.3"
+    "react-dropzone": "^14.2.3",
+    "react-player": "^2.15.1"
   },
   "devDependencies": {
     "@types/material-ui": "^0.21.17",

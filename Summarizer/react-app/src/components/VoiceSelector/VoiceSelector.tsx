@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is import
 import { useText } from "../../Context";
 import Col from "react-bootstrap/esm/Col";
 import { Button } from "react-bootstrap";
+import { AudioPlayer } from "react-audio-play"; // Make sure to import AudioPlayer
 
 interface Voice {
   voice_id: string;
@@ -19,7 +20,9 @@ const VoiceSelector: React.FC = () => {
   const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null); // State to track the selected voice ID
   const audioRefs = useRef<{ [url: string]: HTMLAudioElement }>({});
   const voicesPerPage = 5;
-  const audioPlayerRef = useRef<HTMLAudioElement>(null);
+  const [audioSrc, setAudioSrc] = useState(""); // State to store the audio source
+  const { setGlobalAudio } = useText();
+
   const { summaryText } = useText(); // Access the summaryText from the context
 
   useEffect(() => {
@@ -73,10 +76,9 @@ const VoiceSelector: React.FC = () => {
       })
       .then((blob) => {
         const audioURL = URL.createObjectURL(blob);
-        if (audioPlayerRef.current) {
-          audioPlayerRef.current.src = audioURL;
-          audioPlayerRef.current.play();
-        }
+        setAudioSrc(audioURL);
+        setGlobalAudio(audioURL);
+        // Set the audio source state
       })
       .catch((error) => {
         console.error("Error during text-to-speech processing:", error);
@@ -183,7 +185,6 @@ const VoiceSelector: React.FC = () => {
             </ul>
           </nav>
         )}
-
         <Col md={12} className="d-flex justify-content-center">
           <Button
             variant="primary"
@@ -194,8 +195,11 @@ const VoiceSelector: React.FC = () => {
             Generate Speech
           </Button>
         </Col>
-
-        <audio ref={audioPlayerRef} controls style={{ width: "100%" }}></audio>
+        <AudioPlayer
+          style={{ margin: "auto", padding: "2em" }}
+          className={styles.customstyle}
+          src={audioSrc} // Use the audioSrc state for the source
+        />{" "}
       </div>
     </div>
   );
