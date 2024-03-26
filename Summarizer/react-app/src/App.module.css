@@ -3,13 +3,15 @@
   display: flex;
   box-sizing: border-box;
 }
+
 .homeInner {
-  width: 87.125rem;
+  width: 87.125rem; /* Consider if this needs to be so wide, or if it should scale with % or vw units on smaller screens */
   flex-direction: row;
   justify-content: center;
-  margin: auto;;
+  margin: auto;
   max-width: 100%;
 }
+
 .home {
   width: 100%;
   position: relative;
@@ -18,16 +20,28 @@
   flex-direction: column;
   justify-content: flex-start;
   padding: 0 0 20.25rem;
-  gap: 4.125rem;
+  /* Adjusted the gap for a default screen size */
+  gap: 2rem; /* Adjust this value to find a suitable default gap */
   letter-spacing: normal;
 }
-@media screen and (max-width: 750px) {
+
+/* Adjust the gap for larger screens if necessary */
+@media screen and (min-width: 750px) {
   .home {
-    gap: 2.063rem 4.125rem;
+    gap: 3rem; /* Find a balance that works for larger screens */
   }
 }
+
+@media screen and (max-width: 750px) {
+  .home {
+    /* Adjusted gap to reduce space as screen gets smaller */
+    gap: 2rem;
+  }
+}
+
 @media screen and (max-width: 450px) {
   .home {
-    gap: 1rem 4.125rem;
+    /* Further reduce the gap for very small screens */
+    gap: 1rem;
   }
 }

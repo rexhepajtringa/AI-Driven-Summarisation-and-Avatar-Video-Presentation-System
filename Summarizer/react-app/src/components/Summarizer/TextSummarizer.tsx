@@ -10,6 +10,7 @@ import {
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
+import { useText } from "../../Context";
 
 const RangeExample = ({ sliderValue, setSliderValue }) => {
   const handleSliderChange = (e) => {
@@ -37,6 +38,7 @@ const TextSummarizer = () => {
   const [summaryTone, setSummaryTone] = useState("Neutral");
   const handleSummaryChange = (e) => {
     setSummaryText(e.target.value);
+    setGlobalSummaryText(e.target.value);
   };
 
   const handleFileChange = async (file) => {
@@ -97,6 +99,8 @@ const TextSummarizer = () => {
     }
   }, [summaryText]);
 
+  const { setSummaryText: setGlobalSummaryText } = useText();
+
   const handleSummarize = async () => {
     if (inputText) {
       const payload = {
@@ -124,6 +128,7 @@ const TextSummarizer = () => {
 
         const summary = await response.text();
         setSummaryText(summary);
+        setGlobalSummaryText(summary);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -137,7 +142,11 @@ const TextSummarizer = () => {
       <Row className="justify-content-md-center">
         <Col md={6}>
           <Card className="mb-3">
-            <Card.Body>
+            <Card.Body
+              style={{
+                boxShadow:
+                  "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+              }}>
               <Card.Title className="text-center">
                 Input text to summarize
               </Card.Title>
@@ -211,7 +220,11 @@ const TextSummarizer = () => {
 
         <Col md={6}>
           <Card>
-            <Card.Body>
+            <Card.Body
+              style={{
+                boxShadow:
+                  "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+              }}>
               <Card.Title>Summary Output</Card.Title>
               <Form.Group controlId="summaryText">
                 <Form.Control
