@@ -12,20 +12,29 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
 import { useText } from "../../Context";
 
-const RangeExample = ({ sliderValue, setSliderValue }) => {
+const RangeExample = ({ summaryLength, setSummaryLength }) => {
+  const summaryLengthOptions = ["very short", "short", "medium", "long"];
+
+  // Convert the descriptive value back to slider's numeric value for the UI
+  const sliderValue = summaryLengthOptions.indexOf(summaryLength);
+
   const handleSliderChange = (e) => {
-    setSliderValue(e.target.value);
+    // Convert the slider's numeric value back to your descriptive value
+    const newValue = summaryLengthOptions[e.target.value];
+    setSummaryLength(newValue);
   };
 
   return (
     <div>
       <Form.Label>Length of Summary</Form.Label>
       <Form.Range
-        value={sliderValue}
+        min={0} // Minimum slider value
+        max={3} // Maximum slider value (for 4 positions)
+        value={sliderValue} // Current slider position
         onChange={handleSliderChange}
         className="custom-slider"
       />
-      <p>Selected Value: {sliderValue}</p>
+      <p>summary Will Be: {summaryLength}</p>
     </div>
   );
 };
@@ -33,7 +42,7 @@ const RangeExample = ({ sliderValue, setSliderValue }) => {
 const TextSummarizer = () => {
   const [inputText, setInputText] = useState("");
   const [summaryText, setSummaryText] = useState("");
-  const [summaryLength, setSummaryLength] = useState(50);
+  const [summaryLength, setSummaryLength] = useState("medium");
   const [includeReferences, setIncludeReferences] = useState(false);
   const [summaryTone, setSummaryTone] = useState("Neutral");
   const handleSummaryChange = (e) => {
@@ -102,6 +111,7 @@ const TextSummarizer = () => {
   const { setSummaryText: setGlobalSummaryText } = useText();
 
   const handleSummarize = async () => {
+    console.log(summaryLength);
     if (inputText) {
       const payload = {
         text: inputText,
@@ -175,8 +185,8 @@ const TextSummarizer = () => {
                 <Row>
                   <Col md={4}>
                     <RangeExample
-                      sliderValue={summaryLength}
-                      setSliderValue={setSummaryLength}
+                      summaryLength={summaryLength}
+                      setSummaryLength={setSummaryLength}
                     />
                   </Col>
                   <Col

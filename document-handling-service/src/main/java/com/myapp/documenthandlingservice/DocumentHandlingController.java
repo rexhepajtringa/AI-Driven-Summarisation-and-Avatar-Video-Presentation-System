@@ -15,15 +15,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/document")
 public class DocumentHandlingController {
 	
-	private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Autowired
     private DocumentHandlingService documentHandlingService;
 
-    @Autowired
-    public DocumentHandlingController(KafkaTemplate<String, Object> kafkaTemplate) {
-        this.kafkaTemplate = kafkaTemplate;
-    }
 
     @PostMapping("/uploadPdf")
     public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file) {
@@ -32,15 +27,20 @@ public class DocumentHandlingController {
         	 String extractedText;
              String contentType = file.getContentType();
              
-             if (contentType.equals("application/pdf")) {
+             switch (contentType) {
+             case "application/pdf":
                  extractedText = documentHandlingService.extractTextFromPdf(file);
-             } else if (contentType.equals("application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+                 break;
+             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
                  extractedText = documentHandlingService.extractTextFromWord(file);
-             } else {
+                 break;
+             case "text/plain":
+                 extractedText = documentHandlingService.extractTextFromTextFile(file);
+                 break;
+             default:
                  throw new IllegalArgumentException("Unsupported document type.");
-             }
+         }
              System.out.println(extractedText);
-           //  kafkaTemplate.send("extractedText", extractedText);
             return ResponseEntity.ok(extractedText);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to process the PDF file");

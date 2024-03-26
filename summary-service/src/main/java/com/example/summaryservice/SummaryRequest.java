@@ -3,7 +3,7 @@ package com.example.summaryservice;
 public class SummaryRequest {
     private String text;
     private String tone;
-    private Integer sentenceLength;
+    private String sentenceLength;
     private Boolean includeReferences;
 
     // Getters and setters
@@ -23,11 +23,11 @@ public class SummaryRequest {
         this.tone = tone;
     }
 
-    public Integer getSentenceLength() {
+    public String getSentenceLength() {
         return sentenceLength;
     }
 
-    public void setSentenceLength(Integer sentenceLength) {
+    public void setSentenceLength(String sentenceLength) {
         this.sentenceLength = sentenceLength;
     }
 

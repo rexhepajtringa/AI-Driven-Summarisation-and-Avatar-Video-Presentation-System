@@ -23,37 +23,52 @@ public class GptService {
         this.restTemplate = restTemplate;
     }
 
-    public String summarizeText(String inputText, String tone, Integer sentenceLength, Boolean includeReferences) throws JsonProcessingException {
+    public String summarizeText(String inputText, String tone, String summaryLength, Boolean includeReferences) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-        int maxTokens = sentenceLength != null ? sentenceLength * 50 : 200; 
-        
-        String prompt = String.format("You are a summarizer that prepares text as scripts for video presentations. Summarize the following text in a %s tone:", tone);
+        // Ensure summaryLength has a default value if it's null
+        if (summaryLength == null) {
+            summaryLength = "medium"; // Default value
+        }
+
+        Map<String, String> lengthInstructions = Map.of(
+            "very short", "in a very concise manner, aiming for a 10 second speech.",
+            "short", "concisely, aiming for 20 second speech.",
+            "medium", "with a moderate level of detail, aiming for a 30 second speech.",
+            "long", "in a lot of detail, aiming for a speech up to 1 minute."
+        );
+
+        String lengthInstruction = lengthInstructions.getOrDefault(summaryLength.toLowerCase(), "with a moderate level of detail, aiming for around four sentences");
+
+        String referencesInstruction = includeReferences != null && includeReferences
+                                       ? " Support your speech with references in a natural-speaking manner."
+                                       : "";
+
+        String prompt = String.format("You are a summarizer that prepares text as scripts for video presentations. Remember, the summarized text will not be for reading, it will be for a speaking video. Summarize the following text in a %s speaking tone, %s.%s", tone, lengthInstruction, referencesInstruction);
         
         List<Map<String, String>> messages = new ArrayList<>();
         messages.add(Map.of("role", "system", "content", prompt));
         messages.add(Map.of("role", "user", "content", inputText));
 
-        if (includeReferences != null && includeReferences) {
-            messages.add(Map.of("role", "system", "content", "Please include references."));
-        }
-
         Map<String, Object> payload = Map.of(
             "model", "gpt-3.5-turbo",
-            "max_tokens", maxTokens,
+            "max_tokens", 500,
             "messages", messages
         );
 
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(payload);
+        System.out.println("Sending payload: " + body);
+
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
-        String responseJson = restTemplate.postForEntity(openAiUrl, request, String.class).getBody();
-        return extractContentFromResponse(responseJson);         
+        ResponseEntity<String> responseEntity = restTemplate.postForEntity(openAiUrl, request, String.class);
+        return extractContentFromResponse(responseEntity.getBody());         
     }
+
 
     private String extractContentFromResponse(String jsonResponse) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
