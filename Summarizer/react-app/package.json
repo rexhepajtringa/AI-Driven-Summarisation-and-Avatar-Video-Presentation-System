@@ -16,6 +16,7 @@
     "@mui/material": "^5.15.14",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
+    "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-audio-play": "^0.0.19",
     "react-bootstrap": "^2.10.2",
@@ -24,6 +25,7 @@
     "react-player": "^2.15.1"
   },
   "devDependencies": {
+    "@types/js-cookie": "^3.0.6",
     "@types/material-ui": "^0.21.17",
     "@types/react": "^18.2.67",
     "@types/react-dom": "^18.2.22",

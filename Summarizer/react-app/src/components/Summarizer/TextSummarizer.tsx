@@ -8,9 +8,11 @@ import {
   Card,
   Alert,
 } from "react-bootstrap";
+
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
 import { useText } from "../../Context";
+import Cookies from "js-cookie"; // Import js-cookie
 
 const RangeExample = ({ summaryLength, setSummaryLength }) => {
   const summaryLengthOptions = ["very short", "short", "medium", "long"];
@@ -45,6 +47,9 @@ const TextSummarizer = () => {
   const [summaryLength, setSummaryLength] = useState("medium");
   const [includeReferences, setIncludeReferences] = useState(false);
   const [summaryTone, setSummaryTone] = useState("Neutral");
+  const [title, setTitle] = useState("");
+  const [saveStatus, setSaveStatus] = useState("");
+
   const handleSummaryChange = (e) => {
     setSummaryText(e.target.value);
     setGlobalSummaryText(e.target.value);
@@ -147,6 +152,57 @@ const TextSummarizer = () => {
     }
   };
 
+  const saveSummaryContent = async () => {
+    if (!summaryText.trim() || !title.trim()) {
+      alert("Please provide both a title and a summary before saving.");
+      return;
+    }
+
+    // Reading token and userId from cookies
+    const token = Cookies.get("token");
+    const userId = Cookies.get("userId"); // Assuming you've stored userId in cookies
+
+    // Ensure token and userId are present
+    if (!token || !userId) {
+      alert("Authentication required");
+      return;
+    }
+
+    const contentToSave = {
+      title: title,
+      contentUrl: "summaryText", // Make sure to update this as needed
+      contentType: "TEXT",
+    };
+
+    try {
+      // Include the Authorization header with the Bearer token
+      const response = await fetch(
+        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`, // Use the userId in the URL
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the token in the request headers
+          },
+          body: JSON.stringify(contentToSave),
+          credentials: "omit", // Necessary for cookies to be sent with cross-origin requests
+        }
+      );
+
+      if (!response.ok) {
+        console.log("Response:", response);
+        throw new Error("Could not save the summary content.");
+      }
+
+      setSaveStatus("Summary saved successfully!");
+      setTitle(""); // Optionally clear title after saving
+      // Optionally clear summaryText or leave it for user reference
+    } catch (error) {
+      console.error("Error:", error);
+      setSaveStatus("Failed to save summary.");
+    }
+  };
+
   return (
     <Container fluid>
       <Row className="justify-content-md-center">
@@ -176,7 +232,7 @@ const TextSummarizer = () => {
                     as="textarea"
                     ref={textAreaRef}
                     rows={3}
-                    style={{ backgroundColor: "#ededed" }}
+                    style={{ backgroundColor: "#ededed", minHeight: "200px" }}
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                   />
@@ -246,6 +302,33 @@ const TextSummarizer = () => {
                   onChange={handleSummaryChange}
                 />
               </Form.Group>
+              {/* Place for title input */}
+              <Form.Group controlId="summaryTitle">
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Enter title for your summary"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </Form.Group>
+              {/* Save button */}
+              <Button
+                variant="success"
+                onClick={saveSummaryContent}
+                className="mt-2">
+                Save Summary
+              </Button>
+              {/* Feedback message */}
+              {saveStatus && (
+                <Alert
+                  className="mt-2"
+                  variant={
+                    saveStatus.startsWith("Failed") ? "danger" : "success"
+                  }>
+                  {saveStatus}
+                </Alert>
+              )}
             </Card.Body>
           </Card>
         </Col>

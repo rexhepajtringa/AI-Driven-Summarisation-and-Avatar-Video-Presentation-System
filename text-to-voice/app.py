@@ -17,7 +17,7 @@ def create_app():
         eureka_server=eureka_server,
         app_name=app_name,
         instance_port=app_port,
-        instance_host='192.168.2.3'
+        instance_host='172.20.21.176'
     )
 
     voices_cache = []
