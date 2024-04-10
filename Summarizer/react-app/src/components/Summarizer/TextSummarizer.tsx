@@ -49,6 +49,7 @@ const TextSummarizer = () => {
   const [summaryTone, setSummaryTone] = useState("Neutral");
   const [title, setTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
+  const [file, setFile] = useState(null);
 
   const handleSummaryChange = (e) => {
     setSummaryText(e.target.value);
@@ -158,45 +159,40 @@ const TextSummarizer = () => {
       return;
     }
 
-    // Reading token and userId from cookies
     const token = Cookies.get("token");
-    const userId = Cookies.get("userId"); // Assuming you've stored userId in cookies
-
-    // Ensure token and userId are present
+    const userId = Cookies.get("userId");
     if (!token || !userId) {
       alert("Authentication required");
       return;
     }
 
-    const contentToSave = {
-      title: title,
-      contentUrl: "summaryText", // Make sure to update this as needed
-      contentType: "TEXT",
-    };
+    // Convert the summary text to a Blob and treat it as a file
+    const blob = new Blob([summaryText], { type: "text/plain" });
+    const formData = new FormData();
+    formData.append("file", blob, "summary.txt");
+    formData.append("title", title);
+    formData.append("contentType", "TEXT");
 
     try {
-      // Include the Authorization header with the Bearer token
       const response = await fetch(
-        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`, // Use the userId in the URL
+        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token in the request headers
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(contentToSave),
-          credentials: "omit", // Necessary for cookies to be sent with cross-origin requests
+          body: formData,
+          credentials: "omit",
         }
       );
 
       if (!response.ok) {
-        console.log("Response:", response);
         throw new Error("Could not save the summary content.");
       }
 
       setSaveStatus("Summary saved successfully!");
       setTitle(""); // Optionally clear title after saving
-      // Optionally clear summaryText or leave it for user reference
+      setSummaryText(""); // Optionally clear summaryText as well
     } catch (error) {
       console.error("Error:", error);
       setSaveStatus("Failed to save summary.");

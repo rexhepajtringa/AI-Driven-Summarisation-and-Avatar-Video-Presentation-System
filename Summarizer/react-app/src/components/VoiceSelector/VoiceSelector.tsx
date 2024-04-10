@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./VoiceSelector.module.css"; // Make sure to use CSS modules for scoping
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is imported
 import { useText } from "../../Context";
-import Col from "react-bootstrap/esm/Col";
-import { Button } from "react-bootstrap";
 import { AudioPlayer } from "react-audio-play"; // Make sure to import AudioPlayer
+import Cookies from "js-cookie"; // Import js-cookie
+import { Button, Form, Col, Row } from "react-bootstrap";
 
 interface Voice {
   voice_id: string;
@@ -24,6 +24,7 @@ const VoiceSelector: React.FC = () => {
   const { setGlobalAudio } = useText();
 
   const { summaryText } = useText(); // Access the summaryText from the context
+  const [audioTitle, setAudioTitle] = useState("");
 
   useEffect(() => {
     const fetchVoices = async () => {
@@ -117,6 +118,50 @@ const VoiceSelector: React.FC = () => {
     // Add any additional logic here if needed, such as preparing for a POST request
   };
 
+  const saveAudioContent = async () => {
+    if (!audioTitle.trim()) {
+      alert("Please provide a title for the audio.");
+      return;
+    }
+
+    const token = Cookies.get("token");
+    const userId = Cookies.get("userId");
+    if (!token || !userId) {
+      alert("Authentication required.");
+      return;
+    }
+
+    // Convert the audio source to a Blob and treat it as a file
+    const audioBlob = await fetch(audioSrc).then((res) => res.blob());
+    const formData = new FormData();
+    formData.append("file", audioBlob, "audio.mp3");
+    formData.append("title", audioTitle);
+    formData.append("contentType", "AUDIO");
+
+    try {
+      const response = await fetch(
+        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+          credentials: "omit",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save the audio content.");
+      }
+
+      alert("Audio content saved successfully!");
+      setAudioTitle(""); // Clear title after saving
+    } catch (error) {
+      console.error("Error saving audio content:", error);
+    }
+  };
+
   return (
     <div className={styles.paperParent}>
       <div
@@ -200,6 +245,21 @@ const VoiceSelector: React.FC = () => {
           className={styles.customstyle}
           src={audioSrc} // Use the audioSrc state for the source
         />{" "}
+        <Row className="justify-content-md-center">
+          {" "}
+          {/* Ensure you're using the correct className to center your content */}
+          <Col xs={12} md={8}>
+            <Form.Control
+              type="text"
+              placeholder="Enter title for the audio"
+              value={audioTitle}
+              onChange={(e) => setAudioTitle(e.target.value)}
+            />
+          </Col>
+          <Col xs={6} md={4}>
+            <Button onClick={saveAudioContent}>Save Audio</Button>
+          </Col>
+        </Row>
       </div>
     </div>
   );

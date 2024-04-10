@@ -3,6 +3,7 @@ import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
 import styles from "./VideoGenerator.module.css";
 import { useText } from "../../Context";
 import ReactPlayer from "react-player";
+import Cookies from "js-cookie"; // Ensure you have this package installed for handling cookies
 
 const VideoGenerator = () => {
   const [selectedImage, setSelectedImage] = useState("");
@@ -16,6 +17,7 @@ const VideoGenerator = () => {
 
   const { audio } = useText();
   const [videoUrl, setVideoUrl] = useState(""); // State to store the URL of the generated video
+  const [videoTitle, setVideoTitle] = useState(""); // State to store the title of the generated video
 
   const handleImageUpload = (event) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -61,6 +63,49 @@ const VideoGenerator = () => {
         }
       })
       .catch((error) => console.error("Error:", error));
+  };
+
+  const saveVideoContent = async () => {
+    if (!videoTitle.trim()) {
+      alert("Please provide a title for the video.");
+      return;
+    }
+
+    const token = Cookies.get("token");
+    const userId = Cookies.get("userId");
+    if (!token || !userId) {
+      alert("Authentication required.");
+      return;
+    }
+
+    const videoBlob = await fetch(videoUrl).then((res) => res.blob());
+    const formData = new FormData();
+    formData.append("file", videoBlob, "video.mp4");
+    formData.append("title", videoTitle);
+    formData.append("contentType", "VIDEO");
+
+    try {
+      const response = await fetch(
+        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+          credentials: "omit",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to save the video content.");
+      }
+
+      alert("Video content saved successfully!");
+      setVideoTitle(""); // Clear title after saving
+    } catch (error) {
+      console.error("Error saving video content:", error);
+    }
   };
 
   const urlToBlob = async (url) => {
@@ -140,6 +185,25 @@ const VideoGenerator = () => {
                   Generate Video
                 </Button>
                 <ReactPlayer url={videoUrl} controls={true} width="100%" />
+                <Row className="justify-content-md-center">
+                  <Form>
+                    <Form.Group controlId="videoTitle">
+                      <Form.Label>Video Title</Form.Label>
+                      <Form.Control
+                        type="text"
+                        placeholder="Enter video title"
+                        value={videoTitle}
+                        onChange={(e) => setVideoTitle(e.target.value)}
+                      />
+                    </Form.Group>
+                    <Button
+                      variant="primary"
+                      className="mt-3"
+                      onClick={saveVideoContent}>
+                      Save Video
+                    </Button>
+                  </Form>
+                </Row>
               </div>
             </Card.Body>
           </Card>

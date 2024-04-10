@@ -2,7 +2,10 @@ package com.UserManagement.UserManagementService.model;
 
 import java.time.LocalDateTime;
 
+
 import com.UserManagement.UserManagementService.ContentType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,29 +21,29 @@ import jakarta.persistence.Table;
 @Table(name = "saved_content")
 
 public class SavedContent {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	  @ManyToOne
+	    @JoinColumn(name = "user_id", nullable = false)
+	    @JsonManagedReference
+	    private User user;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private ContentType contentType;
-    
-    
-    @Column(nullable = false)
-    private String contentUrl; 
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private ContentType contentType;
 
-    @Column(nullable = false)
-    private String title;
-    
-    @Column(nullable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(nullable = false)
+	private String contentUrl;
 
-    public Long getId() {
+	@Column(nullable = false)
+	private String title;
+
+	@Column(nullable = false)
+	private LocalDateTime createdAt = LocalDateTime.now();
+
+	public Long getId() {
 		return id;
 	}
 
@@ -60,6 +63,7 @@ public class SavedContent {
 		return contentType;
 	}
 
+	
 	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
 	}
@@ -88,17 +92,14 @@ public class SavedContent {
 		this.createdAt = createdAt;
 	}
 
-	
-    
-  
-    public SavedContent() {
-    }
+	public SavedContent() {
+	}
 
-    public SavedContent(User user, ContentType contentType, String contentUrl, String title) {
-        this.user = user;
-        this.contentType = contentType;
-        this.contentUrl = contentUrl;
-        this.title = title;
-    }
+	public SavedContent(User user, ContentType contentType, String contentUrl, String title) {
+		this.user = user;
+		this.contentType = contentType;
+		this.contentUrl = contentUrl;
+		this.title = title;
+	}
 
 }

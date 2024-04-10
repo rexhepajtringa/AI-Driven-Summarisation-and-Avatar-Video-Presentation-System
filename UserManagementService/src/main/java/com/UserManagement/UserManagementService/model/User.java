@@ -12,11 +12,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import com.UserManagement.UserManagementService.security.token.Token;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.UserManagement.UserManagementService.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Data
 @Entity
@@ -48,14 +51,20 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private Role role; // Added for managing user roles or permissions
 
+
+
 	@Column(nullable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@Column(nullable = false)
 	private LocalDateTime lastModified = LocalDateTime.now(); // Added to track updates
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<SavedContent> savedContents = new ArrayList<>(); // Establishing relationship with SavedContent
+//	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+//	private List<SavedContent> savedContents = new ArrayList<>(); // Establishing relationship with SavedContent
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@JsonBackReference
+	private List<SavedContent> savedContents;
 
 	// Getters and setters
 	public Long getId() {
@@ -137,7 +146,7 @@ public class User implements UserDetails {
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub
-		 return true;
+		return true;
 
 	}
 
@@ -181,15 +190,15 @@ public class User implements UserDetails {
 				&& Objects.equals(savedContents, other.savedContents) && Objects.equals(username, other.username);
 	}
 
-	   // Constructor is private to enforce the use of the Builder.
-    private User(String username, String password, String email, Role role, LocalDateTime createdAt, LocalDateTime lastModified) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.role = role;
-        this.createdAt = createdAt;
-        this.lastModified = lastModified;
-    }
-    
+	// Constructor is private to enforce the use of the Builder.
+	private User(String username, String password, String email, Role role, LocalDateTime createdAt,
+			LocalDateTime lastModified) {
+		this.username = username;
+		this.password = password;
+		this.email = email;
+		this.role = role;
+		this.createdAt = createdAt;
+		this.lastModified = lastModified;
+	}
 
 }

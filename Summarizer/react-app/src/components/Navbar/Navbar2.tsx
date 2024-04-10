@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -29,6 +30,7 @@ const Navbar2: React.FC<Navbar2Props> = ({
   onLogout,
 }) => {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
   const [isSignUp, setIsSignUp] = React.useState(false); // To toggle between Sign Up and Log In forms
@@ -107,7 +109,11 @@ const Navbar2: React.FC<Navbar2Props> = ({
                 width: "auto",
               },
             }}>
-            <Button sx={{ color: theme.palette.text.secondary }}>Home</Button>
+            <Button
+              sx={{ color: theme.palette.text.secondary }}
+              onClick={() => navigate("/")}>
+              Home
+            </Button>
             <Button sx={{ color: theme.palette.text.secondary }}>About</Button>
           </Box>
           <Box
@@ -148,9 +154,7 @@ const Navbar2: React.FC<Navbar2Props> = ({
               <>
                 <Button
                   variant="contained"
-                  onClick={() => {
-                    /* Navigate to user account page */
-                  }}
+                  onClick={() => navigate("/user-dashboard")}
                   sx={{
                     bgcolor: indigo[500],
                     "&:hover": { bgcolor: indigo[600] },

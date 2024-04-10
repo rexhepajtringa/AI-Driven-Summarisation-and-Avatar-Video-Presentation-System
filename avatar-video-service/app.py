@@ -18,7 +18,7 @@ eureka_client.init(
     eureka_server=eureka_server,
     app_name=app_name,
     instance_port=app_port,
-    instance_host='172.20.21.176',
+    instance_host='192.168.2.4',
 )
 
 @app.route('/lip-sync', methods=['POST'])
