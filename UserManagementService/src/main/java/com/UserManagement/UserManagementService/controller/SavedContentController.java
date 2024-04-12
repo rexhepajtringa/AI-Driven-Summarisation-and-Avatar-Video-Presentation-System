@@ -8,6 +8,7 @@ import jakarta.annotation.Resource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -37,14 +38,14 @@ public class SavedContentController {
             return ResponseEntity.badRequest().body("User not found.");
         }
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<SavedContent> getContentById(@PathVariable Long id) {
-        return savedContentService.getContentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-    
+//
+//    @GetMapping("/{id}")
+//    public ResponseEntity<SavedContent> getContentById(@PathVariable Long id) {
+//        return savedContentService.getContentById(id)
+//                .map(ResponseEntity::ok)
+//                .orElse(ResponseEntity.notFound().build());
+//    }
+//    
     
     
 
@@ -60,9 +61,30 @@ public class SavedContentController {
         return ResponseEntity.ok().build();
     }
 
-    
-    @GetMapping("/text/{id}")
-    public ResponseEntity<String> getTextContentById(@PathVariable Long id) {
+//    
+//    @GetMapping("/content/{id}")
+//    public ResponseEntity<String> getContentById(@PathVariable Long id) {
+//        Optional<SavedContent> optionalContent = savedContentService.getContentById(id);
+//        if (!optionalContent.isPresent()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//
+//        try {
+//            SavedContent content = optionalContent.get();
+//            // Assuming getContentUrl() returns the full URL, you need to extract just the object name.
+//            String objectName = content.getContentUrl(); 
+//            String actualObjectName = objectName.substring(objectName.lastIndexOf('/') + 1);
+//            String textContent = savedContentService.downloadTextContent(actualObjectName);
+//            return ResponseEntity.ok(textContent);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
+
+
+    @GetMapping("/content/{id}")
+    public ResponseEntity<?> getContentById(@PathVariable Long id) {
         Optional<SavedContent> optionalContent = savedContentService.getContentById(id);
         if (!optionalContent.isPresent()) {
             return ResponseEntity.notFound().build();
@@ -70,35 +92,30 @@ public class SavedContentController {
 
         try {
             SavedContent content = optionalContent.get();
-            // Assuming getContentUrl() returns the full URL, you need to extract just the object name.
-            String objectName = content.getContentUrl(); 
-            String actualObjectName = objectName.substring(objectName.lastIndexOf('/') + 1);
-            String textContent = savedContentService.downloadTextContent(actualObjectName);
-            return ResponseEntity.ok(textContent);
+            String objectName = content.getContentUrl().substring(content.getContentUrl().lastIndexOf('/') + 1);
+
+            switch (content.getContentType()) {
+                case TEXT:
+                    String textContent = savedContentService.downloadTextContent(objectName);
+                    return ResponseEntity.ok(textContent);
+
+                case VIDEO:
+                case AUDIO:
+                    // For binary data like video and audio, stream the data
+                    byte[] data = savedContentService.downloadContent(objectName);
+                    return ResponseEntity.ok()
+                                         .contentType(MediaType.parseMediaType(content.getContentType().getMediaType()))
+                                         .body(data);
+
+                default:
+                    return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to download content.");
         }
     }
 
-
-    
-//    @GetMapping("/content/text/{id}")
-//    public ResponseEntity<String> getTextContentById(@PathVariable Long id) {
-//    	return (ResponseEntity<String>) savedContentService.getContentById(id)
-//    	        .map(content -> {
-//    	            try {
-//    	                String objectName = content.getContentUrl();
-//    	                String textContent = savedContentService.downloadTextContent(objectName);
-//    	                return ResponseEntity.ok(textContent);
-//    	            } catch (IOException e) {
-//    	                e.printStackTrace();
-//    	                // This should return ResponseEntity<String> to match the return type of the method.
-//    	                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//    	            }
-//    	        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-//
-//    }
 
     
     @GetMapping("/user/{userId}/type/{contentType}")

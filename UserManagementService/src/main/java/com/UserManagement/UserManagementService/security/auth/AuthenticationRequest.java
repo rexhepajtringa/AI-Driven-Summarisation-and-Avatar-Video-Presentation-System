@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class AuthenticationRequest {
 	private String username;
 	 String password;
+	 
 	public String getUsername() {
 		return username;
 	}

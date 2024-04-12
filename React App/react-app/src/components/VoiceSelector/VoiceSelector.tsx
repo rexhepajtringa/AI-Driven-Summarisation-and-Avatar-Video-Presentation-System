@@ -20,7 +20,7 @@ const VoiceSelector: React.FC = () => {
   const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null); // State to track the selected voice ID
   const audioRefs = useRef<{ [url: string]: HTMLAudioElement }>({});
   const voicesPerPage = 5;
-  const [audioSrc, setAudioSrc] = useState(""); // State to store the audio source
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const { setGlobalAudio } = useText();
 
   const { summaryText } = useText(); // Access the summaryText from the context
@@ -77,7 +77,7 @@ const VoiceSelector: React.FC = () => {
       })
       .then((blob) => {
         const audioURL = URL.createObjectURL(blob);
-        setAudioSrc(audioURL);
+        setAudioSrc(audioURL); // This will now trigger the rendering of the AudioPlayer
         setGlobalAudio(audioURL);
         // Set the audio source state
       })
@@ -240,26 +240,47 @@ const VoiceSelector: React.FC = () => {
             Generate Speech
           </Button>
         </Col>
-        <AudioPlayer
-          style={{ margin: "auto", padding: "2em" }}
-          className={styles.customstyle}
-          src={audioSrc} // Use the audioSrc state for the source
-        />{" "}
-        <Row className="justify-content-md-center">
-          {" "}
-          {/* Ensure you're using the correct className to center your content */}
-          <Col xs={12} md={8}>
-            <Form.Control
-              type="text"
-              placeholder="Enter title for the audio"
-              value={audioTitle}
-              onChange={(e) => setAudioTitle(e.target.value)}
-            />
-          </Col>
-          <Col xs={6} md={4}>
-            <Button onClick={saveAudioContent}>Save Audio</Button>
-          </Col>
-        </Row>
+        {audioSrc && (
+          <Row className="justify-content-center">
+            <Col md={12} className="d-flex flex-column align-items-center">
+              <AudioPlayer
+                style={{ margin: "auto", padding: "2em" }}
+                className={styles.customstyle}
+                src={audioSrc} // Use the audioSrc state for the source
+              />
+              <Form.Control
+                type="text"
+                placeholder="Enter title for the audio"
+                value={audioTitle}
+                onChange={(e) => setAudioTitle(e.target.value)}
+                className="my-3 w-50" // Adjust the width as needed
+              />
+              <Button
+                variant="primary"
+                onClick={saveAudioContent}
+                className="my-2">
+                Save Audio
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  // Create a link and click it to download the audio
+                  const link = document.createElement("a");
+                  link.href = audioSrc;
+                  link.setAttribute(
+                    "download",
+                    audioTitle || "downloaded_audio.mp3"
+                  ); // Use the title or a default filename
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                }}
+                className="my-2">
+                Download Audio
+              </Button>
+            </Col>
+          </Row>
+        )}
       </div>
     </div>
   );

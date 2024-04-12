@@ -1,8 +1,0 @@
-
-.selectedImage {
-    border: 4px solid rgb(255, 0, 0); /* Red border remains */
-    box-shadow: 
-      0 0 15px 5px rgba(255, 0, 0, 0.5), /* Outer softer glow */
-      0 0 5px 2px rgba(255, 0, 0, 0.1); /* Inner stronger glow */
-    }
-  

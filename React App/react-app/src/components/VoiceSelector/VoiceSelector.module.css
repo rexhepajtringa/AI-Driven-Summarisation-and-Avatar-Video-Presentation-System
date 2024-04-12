@@ -25,6 +25,23 @@
   gap: 0.5rem; /* Reduced gap */
   justify-content: center;
 }
+/* ... existing styles */
+
+/* Center the form and button horizontally */
+.justify-content-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Spacing for the form control and button */
+.my-3 {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ... any additional styles */
+
 
 .voiceCard {
   width: calc(20% - 0.5rem); /* Adjusted width */

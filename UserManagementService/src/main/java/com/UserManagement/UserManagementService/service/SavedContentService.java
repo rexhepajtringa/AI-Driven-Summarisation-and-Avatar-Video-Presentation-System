@@ -107,12 +107,12 @@ public class SavedContentService {
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
         return String.format("https://storage.googleapis.com/%s/%s", bucketName, objectName);
     }
-
     public byte[] downloadContent(String objectName) throws IOException {
         Blob blob = storage.get(BlobId.of(BUCKET_NAME, objectName));
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        blob.downloadTo(outputStream);
-        return outputStream.toByteArray();
+        if (blob == null) {
+            throw new IOException("Blob not found for objectName: " + objectName);
+        }
+        return blob.getContent(Blob.BlobSourceOption.generationMatch());
     }
 
     public String downloadTextContent(String objectName) throws IOException {

@@ -31,7 +31,7 @@ public class AuthenticationService {
 			        .email(request.getEmail())
 			        .password(passwordEncoder.encode(request.getPassword()))
 			        .role(Role.USER)
-			        .createdAt(LocalDateTime.now()) // Set the current date and time here
+			        .createdAt(LocalDateTime.now()) 
 	                .lastModified(LocalDateTime.now())
 			        .build();
 		repository.save(user);
@@ -39,7 +39,7 @@ public class AuthenticationService {
 
 		  return AuthenticationResponse.builder()
 	                .token(jwtToken)
-	                .userId(user.getId()) // Set user ID in response
+	                .userId(user.getId()) 
 	                .build();	}
 
 	   public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -51,7 +51,7 @@ public class AuthenticationService {
 
 	        return AuthenticationResponse.builder()
 	                .token(jwtToken)
-	                .userId(user.getId()) // Include the user ID in the response
+	                .userId(user.getId()) 
 	                .build();
 	    }
 }

@@ -131,7 +131,15 @@ const VideoGenerator = () => {
               style={{
                 boxShadow:
                   "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-              }}>
+                borderRadius: "10px",
+                backgroundColor:
+                  "rgba(255, 255, 255, 0.5)" /* Semi-transparent white background */,
+                padding: "20px" /* Adjust padding as needed */,
+                // Other styles you want to apply
+              }}
+              className={`${
+                videoUrl ? "videoContainerExpanded" : "videoContainer"
+              }`}>
               <Card.Title className="text-center">
                 Generate Avatar Video
               </Card.Title>
@@ -184,26 +192,47 @@ const VideoGenerator = () => {
                   onClick={uploadAvatarVideo}>
                   Generate Video
                 </Button>
-                <ReactPlayer url={videoUrl} controls={true} width="100%" />
-                <Row className="justify-content-md-center">
-                  <Form>
-                    <Form.Group controlId="videoTitle">
-                      <Form.Label>Video Title</Form.Label>
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter video title"
-                        value={videoTitle}
-                        onChange={(e) => setVideoTitle(e.target.value)}
-                      />
-                    </Form.Group>
-                    <Button
-                      variant="primary"
-                      className="mt-3"
-                      onClick={saveVideoContent}>
-                      Save Video
-                    </Button>
-                  </Form>
-                </Row>
+                {videoUrl && (
+                  <>
+                    <ReactPlayer url={videoUrl} controls={true} width="100%" />
+                    <Row className="justify-content-md-center">
+                      <Form className="w-100">
+                        <Form.Group controlId="videoTitle">
+                          <Form.Label>Video Title</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter video title"
+                            value={videoTitle}
+                            onChange={(e) => setVideoTitle(e.target.value)}
+                          />
+                        </Form.Group>
+                        <div className="d-flex justify-content-center mt-3">
+                          <Button variant="primary" onClick={saveVideoContent}>
+                            Save Video
+                          </Button>
+                        </div>
+                        {videoUrl && (
+                          <div className="d-flex justify-content-center mt-3">
+                            <Button
+                              variant="secondary"
+                              onClick={() => {
+                                // Ensure the link has the download attribute to download the file
+                                const a = document.createElement("a");
+                                a.href = videoUrl;
+                                a.download =
+                                  videoTitle || "downloadedVideo.mp4"; // Default filename if title isn't set
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                              }}>
+                              Download Video
+                            </Button>
+                          </div>
+                        )}
+                      </Form>
+                    </Row>
+                  </>
+                )}
               </div>
             </Card.Body>
           </Card>

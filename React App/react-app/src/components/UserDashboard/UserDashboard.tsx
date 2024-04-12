@@ -73,7 +73,7 @@ const DashboardPage = () => {
       return;
     }
 
-    const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/text/${contentId}`;
+    const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/content/${contentId}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
