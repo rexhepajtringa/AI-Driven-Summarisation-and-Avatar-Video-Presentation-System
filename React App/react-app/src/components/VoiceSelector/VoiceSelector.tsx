@@ -5,6 +5,7 @@ import { useText } from "../../Context";
 import { AudioPlayer } from "react-audio-play"; // Make sure to import AudioPlayer
 import Cookies from "js-cookie"; // Import js-cookie
 import { Button, Form, Col, Row } from "react-bootstrap";
+import { useGlobalContent } from "../Utils/GlobalContentContext";
 
 interface Voice {
   voice_id: string;
@@ -25,6 +26,23 @@ const VoiceSelector: React.FC = () => {
 
   const { summaryText } = useText(); // Access the summaryText from the context
   const [audioTitle, setAudioTitle] = useState("");
+  const globalContext = useGlobalContent();
+
+  // Check if globalContext is not null
+  if (!globalContext) {
+    throw new Error(
+      "useGlobalContent must be used within a GlobalContentProvider"
+    );
+  }
+
+  // Now TypeScript knows globalContext is not null
+  const { content, setContent } = globalContext;
+
+  useEffect(() => {
+    if (content.audio) {
+      setAudioSrc(content.audio);
+    }
+  }, [content.audio]);
 
   useEffect(() => {
     const fetchVoices = async () => {

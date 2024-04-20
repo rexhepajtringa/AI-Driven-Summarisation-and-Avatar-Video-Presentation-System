@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import { ListGroup, Tab, Nav, Modal, Card } from "react-bootstrap";
 import Cookies from "js-cookie";
 import styles from "./ContentTabs.module.css"; // Make sure the path is correct
+import { useGlobalContent } from "../Utils/GlobalContentContext";
+import { useNavigate } from "react-router-dom";
+
 interface Content {
   id: number;
   title: string;
@@ -18,6 +21,17 @@ const ContentTabs = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalContentType, setModalContentType] = useState("");
+  const navigate = useNavigate(); // Hook to redirect
+
+  const globalContent = useGlobalContent();
+
+  if (!globalContent) {
+    throw new Error(
+      "useGlobalContent must be used within a GlobalContentProvider"
+    );
+  }
+
+  const { setContent } = globalContent;
 
   const token = Cookies.get("token");
   const userId = Cookies.get("userId");
@@ -102,6 +116,43 @@ const ContentTabs = () => {
       ))}
     </ListGroup>
   );
+
+  const handleUseContent = (type, contentData) => {
+    setContent((prevState) => ({
+      ...prevState,
+      [type]: contentData,
+    }));
+    navigate("/"); // Redirect to the home page
+  };
+
+  // Render the button dynamically based on content type
+  const renderUseButton = (contentType) => {
+    let buttonText = "";
+    switch (contentType) {
+      case "TEXT":
+        buttonText = "Use Summary";
+        break;
+      case "AUDIO":
+        buttonText = "Use Audio";
+        break;
+      case "VIDEO":
+        buttonText = "Use Video";
+        break;
+      default:
+        return null;
+    }
+
+    return (
+      <button
+        className={`${styles.btn} ${styles.btnSuccess}`}
+        onClick={() =>
+          handleUseContent(contentType.toLowerCase(), modalContent)
+        }>
+        {buttonText}
+      </button>
+    );
+  };
+
   return (
     <>
       <Card className={styles.cardContainer}>
@@ -157,6 +208,8 @@ const ContentTabs = () => {
             ) : null)}{" "}
         </Modal.Body>
         <Modal.Footer className={styles.modalFooter}>
+          {renderUseButton(modalContentType)}
+
           {modalContent && (
             <button
               className={`${styles.btn} ${styles.btnPrimary}`}

@@ -114,7 +114,6 @@ const Navbar2: React.FC<Navbar2Props> = ({
               onClick={() => navigate("/")}>
               Home
             </Button>
-            <Button sx={{ color: theme.palette.text.secondary }}>About</Button>
           </Box>
           <Box
             sx={{
@@ -167,8 +166,14 @@ const Navbar2: React.FC<Navbar2Props> = ({
                   variant="contained"
                   onClick={() => {
                     onLogout();
+                    // Clear global context states
+                    if (globalContent) {
+                      globalContent.resetContent();
+                    }
                     Cookies.remove("token");
                     Cookies.remove("userId");
+
+                    navigate("/");
                   }}
                   sx={{
                     bgcolor: indigo[500],

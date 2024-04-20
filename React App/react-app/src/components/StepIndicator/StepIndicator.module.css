@@ -2,9 +2,8 @@
 .container {
     text-align: center; /* Centers the text */
     background-color: rgba(255, 255, 255, 0.35); /* Half-transparent white background */
-    color: #3f51b5; /* Sets the text color */
+    color: #040d3c; /* Sets the text color */
     font-size: 1rem; /* Big font size */
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8); /* Dark shadow for better readability */
     -webkit-text-stroke: 0.1px #ffffff; /* Adds a thin white text stroke for WebKit browsers */
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adds a shadow to the container to create a floating card effect */
     border-radius: 10px; /* Rounds the corners of the container */

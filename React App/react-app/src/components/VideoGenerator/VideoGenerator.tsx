@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
 import styles from "./VideoGenerator.module.css";
 import { useText } from "../../Context";
 import ReactPlayer from "react-player";
-import Cookies from "js-cookie"; // Ensure you have this package installed for handling cookies
+import Cookies from "js-cookie";
+import { useGlobalContent } from "../Utils/GlobalContentContext"; // Adjust the import path as necessary
 
 const VideoGenerator = () => {
   const [selectedImage, setSelectedImage] = useState("");
@@ -16,8 +17,28 @@ const VideoGenerator = () => {
   ];
 
   const { audio } = useText();
-  const [videoUrl, setVideoUrl] = useState(""); // State to store the URL of the generated video
-  const [videoTitle, setVideoTitle] = useState(""); // State to store the title of the generated video
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoTitle, setVideoTitle] = useState("");
+
+  // Access the global content state
+  const globalContext = useGlobalContent();
+
+  // Check if globalContext is not null
+  if (!globalContext) {
+    throw new Error(
+      "useGlobalContent must be used within a GlobalContentProvider"
+    );
+  }
+
+  // Now TypeScript knows globalContext is not null
+  const { content } = globalContext;
+
+  // Set the local videoUrl state when the global video state changes
+  useEffect(() => {
+    if (content.video) {
+      setVideoUrl(content.video);
+    }
+  }, [content.video]);
 
   const handleImageUpload = (event) => {
     const file = event.target.files ? event.target.files[0] : null;
@@ -40,14 +61,12 @@ const VideoGenerator = () => {
       return;
     }
 
-    // Convert audioSrc URL to Blob for FormData
     const audioBlob = await urlToBlob(audio);
 
-    // Convert selectedImage URL to Blob
     const imageBlob = await urlToBlob(selectedImage);
 
     const formData = new FormData();
-    formData.append("image", imageBlob, "image.jpg"); // Assuming JPEG format
+    formData.append("image", imageBlob, "image.jpg");
     formData.append("audio", audioBlob, "audio.mp3");
 
     fetch("http://localhost:8765/AVATAR-VIDEO-SERVICE/lip-sync", {
@@ -110,12 +129,10 @@ const VideoGenerator = () => {
 
   const urlToBlob = async (url) => {
     if (url.startsWith("data:")) {
-      // Convert base64 to blob
       const response = await fetch(url);
       const blob = await response.blob();
       return blob;
     } else {
-      // Fetch the image via the URL and then convert to blob
       const response = await fetch(url);
       const blob = await response.blob();
       return blob;

@@ -11,6 +11,7 @@ import {
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
+import { useGlobalContent } from "../Utils/GlobalContentContext";
 import { useText } from "../../Context";
 import Cookies from "js-cookie"; // Import js-cookie
 
@@ -50,13 +51,31 @@ const TextSummarizer = () => {
   const [title, setTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
   const [file, setFile] = useState(null);
+  const globalContext = useGlobalContent();
 
-  const handleSummaryChange = (e) => {
+  // Check if globalContext is not null
+  if (!globalContext) {
+    throw new Error(
+      "useGlobalContent must be used within a GlobalContentProvider"
+    );
+  }
+
+  // Now TypeScript knows globalContext is not null
+  const { content, setContent } = globalContext;
+
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSummaryText(e.target.value);
     setGlobalSummaryText(e.target.value);
   };
 
-  const handleFileChange = async (file) => {
+  useEffect(() => {
+    if (content.text) {
+      // Set your local state to the content from context
+      setSummaryText(content.text);
+    }
+  }, [content.text]);
+
+  const handleFileChange = async (file: File) => {
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
