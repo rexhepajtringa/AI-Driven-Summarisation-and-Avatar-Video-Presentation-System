@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+ 
+  naming-server:
+   image: trexhepaj/mmv-naming-server:0.0.1-SNAPSHOT
+   mem_limit: 700m
+   ports:
+    - "8761:8761"
+   networks:
+    - mmv-network
+
+  document-handling-service:
+   image: trexhepaj/mmv-document-handling-service:0.0.1-SNAPSHOT
+   mem_limit: 700m
+   ports:
+    - "8080:8080"
+   networks:
+    - mmv-network
+   depends_on:
+    - naming-server
+   environment:
+    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+
+    
+  api-gateway:
+   image: trexhepaj/mmv-api-gateway:0.0.1-SNAPSHOT
+   mem_limit: 700m
+   ports:
+    - "8765:8765"
+   networks:
+    - mmv-network
+   depends_on:
+    - naming-server
+   environment:
+    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+
+
+
+
+
+networks:
+  mmv-network:
+    
