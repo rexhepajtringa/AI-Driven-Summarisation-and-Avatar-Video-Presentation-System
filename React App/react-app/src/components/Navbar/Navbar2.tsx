@@ -16,6 +16,7 @@ import { indigo } from "@mui/material/colors"; // Importing the indigo color
 import LoginIcon from "@mui/icons-material/Login"; // Importing the login icon
 import AuthForm from "./AuthForm"; // Import the AuthForm component
 import Cookies from "js-cookie";
+import { useGlobalContent } from "../Utils/GlobalContentContext";
 
 // Define the types of props Navbar2 accepts
 interface Navbar2Props {
@@ -38,6 +39,13 @@ const Navbar2: React.FC<Navbar2Props> = ({
     handleClose(); // Closes the modal
     // Further actions can be placed here if necessary, such as showing other components
   };
+  const globalContext = useGlobalContent();
+
+  if (!globalContext) {
+    throw new Error(
+      "useGlobalContent must be used within a GlobalContentProvider"
+    );
+  }
 
   const modalStyle = {
     position: "absolute" as const, // 'as const' is used for type assertion here
@@ -167,8 +175,8 @@ const Navbar2: React.FC<Navbar2Props> = ({
                   onClick={() => {
                     onLogout();
                     // Clear global context states
-                    if (globalContent) {
-                      globalContent.resetContent();
+                    if (globalContext) {
+                      globalContext.resetContent();
                     }
                     Cookies.remove("token");
                     Cookies.remove("userId");
