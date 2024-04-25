@@ -278,8 +278,9 @@ const TextSummarizer = () => {
                         value={summaryTone}
                         onChange={(e) => setSummaryTone(e.target.value)}>
                         <option value="Neutral">Neutral</option>
-                        <option value="Positive">Positive</option>
-                        <option value="Negative">Negative</option>
+                        <option value="Professional">Professional</option>
+                        <option value="Casual">Casual</option>
+                        <option value="Enthusiastic">Enthusiastic</option>
                       </Form.Select>
                     </Form.Group>
                   </Col>

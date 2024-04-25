@@ -103,7 +103,7 @@ const Navbar2: React.FC<Navbar2Props> = ({
                 justifyContent: "flex-start",
               },
             }}>
-            Text Summarizer Builder
+            Text Summarizer & Avatar Video Builder
           </Typography>
           <Box
             sx={{
@@ -119,7 +119,8 @@ const Navbar2: React.FC<Navbar2Props> = ({
             }}>
             <Button
               sx={{ color: theme.palette.text.secondary }}
-              onClick={() => navigate("/")}>
+              onClick={() => navigate("/")}
+              style={{ marginLeft: "-200px" }}>
               Home
             </Button>
           </Box>
