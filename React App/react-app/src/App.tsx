@@ -9,11 +9,10 @@ import VoiceSelector from "./components/VoiceSelector/VoiceSelector.tsx";
 import VideoGenerator from "./components/VideoGenerator/VideoGenerator.tsx";
 import StepIndicator from "./components/StepIndicator/StepIndicator.tsx";
 import { GlobalContentProvider } from "./components/Utils/GlobalContentContext.tsx";
-import { useNavigate } from "react-router-dom";
-
-import { TextProvider } from "./Context";
 import React from "react";
 import ContentTabs from "./components/UserDashboard/ContentTabs.tsx";
+import HomePage from "./components/HomePage/HomePage.tsx"; // Make sure to have this component created
+import { TextProvider } from "./Context";
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
@@ -68,10 +67,11 @@ const App: React.FC = () => {
                       number={3}
                       instructions="Choose an avatar or upload your own to generate an avatar speaking video."
                     />
-
                     <VideoGenerator />
                   </TextProvider>
-                ) : null
+                ) : (
+                  <HomePage />
+                ) // Show HomePage if not logged in
               }
             />
             <Route path="/user-dashboard" element={<ContentTabs />} />

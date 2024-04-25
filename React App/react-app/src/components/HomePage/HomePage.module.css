@@ -1,0 +1,89 @@
+/* HomePage.module.css */
+.background {
+    height: 100vh;
+    display: flex;
+    margin-top: -100px;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    max-width: 600px;
+    text-align: center;
+  }
+  
+  .title {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  .iconsContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Adjust gap as needed */
+    margin-bottom: 20px;
+  }
+  
+  .icon {
+    font-size: 2.5rem; /* Adjust icon size as needed */
+    color: #2c3e50; /* Adjust icon color as needed */
+  }
+  
+  .arrowIcon {
+    font-size: 2rem; /* Adjust arrow icon size as needed */
+    color: #7f8c8d; /* Adjust arrow icon color as needed */
+  }
+  
+ 
+  .description {
+    color: #34495e;
+    font-size: 1.3rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  
+  .buttonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+  }
+  
+  .signUpButton,
+  .loginButton {
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.25s, transform 0.25s;
+  }
+  
+  .signUpButton {
+    background-color: #4c51bf;
+    color: white;
+  }
+  
+  .signUpButton:hover {
+    background-color: #5a67d8;
+    transform: translateY(-3px);
+  }
+  
+  .loginButton {
+    background-color: #ffffff;
+    color: #4c51bf;
+    border: 1px solid #4c51bf;
+  }
+  
+  .loginButton:hover {
+    background-color: #f7fafc;
+    transform: translateY(-3px);
+  }
+  
