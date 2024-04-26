@@ -6,7 +6,7 @@ def create_app():
     app = Flask(__name__)
 
     # Eureka and ElevenLabs configuration
-    eureka_server = "http://host.docker.internal:8761"
+    eureka_server = "http://naming-server:8761/eureka"
     app_name = "text-to-voice-service"
     app_port = 5000
     ELEVENLABS_VOICES_ENDPOINT = "https://api.elevenlabs.io/v1/voices"
@@ -17,8 +17,8 @@ def create_app():
         eureka_server=eureka_server,
         app_name=app_name,
         instance_port=app_port,
-        instance_host='192.168.1.16'
     )
+
 
     voices_cache = []
 

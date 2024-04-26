@@ -35,10 +35,116 @@ services:
    environment:
     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
 
+       
+  spring-cloud-config-server:
+   image: trexhepaj/mmv-spring-cloud-config-server:0.0.1-SNAPSHOT
+   mem_limit: 700m
+   ports:
+    - "8888:8888"
+   networks:
+    - mmv-network
+   depends_on:
+    - naming-server
+   environment:
+    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
 
 
+  summary-service:
+   image: trexhepaj/mmv-summary-service:0.0.1-SNAPSHOT
+   mem_limit: 700m
+   ports:
+    - "8100:8100"
+   networks:
+    - mmv-network
+   depends_on:
+    - naming-server
+   environment:
+    - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+    
 
+  usermanagementservice:
+    image: trexhepaj/mmv-usermanagementservice:0.0.1-SNAPSHOT
+    mem_limit: 700m
+    ports:
+      - "8300:8300"
+    networks:
+      - mmv-network
+    depends_on:
+      - naming-server
+      - postgres-db
+      - spring-cloud-config-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+      - GOOGLE_APPLICATION_CREDENTIALS=/summarizereports-f37e9f0f79bb.json
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/users
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_JPA_PROPERTIES_HIBERNATE_JDBC_LOB_NON_CONTEXTUAL_CREATION=true
+      - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
+    volumes:
+      - ./summarizereports-f37e9f0f79bb.json:/summarizereports-f37e9f0f79bb.json
+      - ./app/tmp:/app/tmp 
+
+
+  postgres-db:
+    image: postgres:latest
+    mem_limit: 700m
+    environment:
+      - POSTGRES_DB=users
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=1234
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - mmv-network
+
+
+  text-to-voice-service:
+    build:
+      context: ./text-to-voice  # Adjusted to the correct relative path
+    image: text-to-voice:latest
+    mem_limit: 700m
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./text-to-voice:/app  # Mounts the Python service directory to /app in the container
+      - ./text-to-voice/audio_files:/app/audio_files  # Ensures audio_files is persistent
+    networks:
+      - mmv-network
+    depends_on:
+      - naming-server
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --reload
+
+  avatar-video-service:
+    build:
+      context: ./avatar-video-service 
+    image: avatar-video-service:latest
+    mem_limit: 700m
+    ports:
+      - "5020:5020"
+    volumes:
+      - ./avatar-video-service:/app  # Mounts the service directory to /app in the container
+      - avatar-uploads:/app/uploads  # This mounts the volume at the path where your application expects uploads
+    networks:
+      - mmv-network
+    depends_on:
+      - naming-server
+    environment:
+      - GOOEY_API_KEY=sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx
+      - FLASK_APP=app.py
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --reload
 
 networks:
   mmv-network:
-    
+    driver: bridge
+
+volumes:
+  postgres-data:
+  appp-tmp:
+  avatar-uploads:  # This defines the volume within Docker Compose
+    driver: local

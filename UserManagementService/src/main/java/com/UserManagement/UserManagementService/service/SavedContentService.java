@@ -62,12 +62,22 @@ public class SavedContentService {
     }
     
     private File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
-        File convFile = new File(uniqueFileName);
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(file.getBytes());
-        fos.close();
+        File tempDir = new File(System.getProperty("java.io.tmpdir"));
+        File convFile = new File(tempDir, uniqueFileName);
+        try (FileOutputStream fos = new FileOutputStream(convFile)) {
+            fos.write(file.getBytes());
+        }
         return convFile;
     }
+
+    
+//    private File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
+//        File convFile = new File(uniqueFileName);
+//        FileOutputStream fos = new FileOutputStream(convFile);
+//        fos.write(file.getBytes());
+//        fos.close();
+//        return convFile;
+//    }
     
 //    public SavedContent saveContent(Long userId, MultipartFile file, String title, ContentType contentType) throws IOException {
 //        String objectName = file.getOriginalFilename();
