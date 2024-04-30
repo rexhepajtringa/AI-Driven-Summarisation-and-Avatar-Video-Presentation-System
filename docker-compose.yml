@@ -60,7 +60,23 @@ services:
     - naming-server
    environment:
     - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
-    
+  
+  avatar-video-service:
+    image: avatar-video-service:latest
+    ports:
+      - "8900:8900"
+    volumes:
+      - ./avatar-video-service:/app  # Mounts the service directory to /app in the container
+      - avatar-uploads:/app/uploads  # This mounts the volume at the path where your application expects uploads
+    networks:
+      - mmv-network
+    depends_on:
+      - naming-server
+    environment:
+      - FLASK_APP=app.py
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
+      - FLASK_ENV=development
+    command: flask run --host=0.0.0.0 --reload
 
   usermanagementservice:
     image: trexhepaj/mmv-usermanagementservice:0.0.1-SNAPSHOT
@@ -117,27 +133,10 @@ services:
     environment:
       - FLASK_APP=app.py
       - FLASK_ENV=development
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://naming-server:8761/eureka/
     command: flask run --host=0.0.0.0 --reload
 
-  avatar-video-service:
-    build:
-      context: ./avatar-video-service 
-    image: avatar-video-service:latest
-    mem_limit: 700m
-    ports:
-      - "5020:5020"
-    volumes:
-      - ./avatar-video-service:/app  # Mounts the service directory to /app in the container
-      - avatar-uploads:/app/uploads  # This mounts the volume at the path where your application expects uploads
-    networks:
-      - mmv-network
-    depends_on:
-      - naming-server
-    environment:
-      - GOOEY_API_KEY=sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx
-      - FLASK_APP=app.py
-      - FLASK_ENV=development
-    command: flask run --host=0.0.0.0 --reload
+  
 
 networks:
   mmv-network:
@@ -145,6 +144,6 @@ networks:
 
 volumes:
   postgres-data:
-  appp-tmp:
+  app-tmp:
   avatar-uploads:  # This defines the volume within Docker Compose
     driver: local

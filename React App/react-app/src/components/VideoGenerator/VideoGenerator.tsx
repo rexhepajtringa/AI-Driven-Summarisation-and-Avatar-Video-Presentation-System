@@ -69,7 +69,7 @@ const VideoGenerator = () => {
     formData.append("image", imageBlob, "image.jpg");
     formData.append("audio", audioBlob, "audio.mp3");
 
-    fetch("http://localhost:8765/AVATAR-VIDEO-SERVICE/lip-sync", {
+    fetch("http://localhost:8765/TEXT-TO-VOICE-SERVICE/lip-sync", {
       method: "POST",
       body: formData,
     })
@@ -79,6 +79,7 @@ const VideoGenerator = () => {
           setVideoUrl(data.output_video_url);
         } else {
           throw new Error("No video URL in response");
+          console.log(data);
         }
       })
       .catch((error) => console.error("Error:", error));

@@ -1,37 +1,30 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 import requests
 import os
 from py_eureka_client import eureka_client
 import json
 
 
+
 def create_app():
     app = Flask(__name__)
-    app.config['UPLOAD_FOLDER'] = 'uploads/'
-    app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-    GOOEY_API_KEY='sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx'
 
-    # Eureka configuration
+    # Eureka and ElevenLabs configuration
     eureka_server = "http://naming-server:8761/eureka"
     app_name = "avatar-video-service"
-    app_port = 5020
+    app_port = 8900
+  
+    GOOEY_API_KEY='sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx'
+
+    # Initialize Eureka client
     eureka_client.init(
-                eureka_server=eureka_server,
-                app_name=app_name,
-                instance_port=app_port,
-            )
-    # with app.app_context():
-    #     # Initialize Eureka client
-    #     try:
-    #         eureka_client.init(
-    #             eureka_server=eureka_server,
-    #             app_name=app_name,
-    #             instance_port=app_port,
-    #         )
-    #     except Exception as e:
-    #         app.logger.error(f"Eureka Client failed to initialize: {str(e)}")
+        eureka_server=eureka_server,
+        app_name=app_name,
+        instance_port=app_port,
+    )
 
 
+    
 
     @app.route('/lip-sync', methods=['POST'])
     def lip_sync():
@@ -50,10 +43,9 @@ def create_app():
         ]
 
         payload = {}
-
         response = requests.post(
             "https://api.gooey.ai/v2/Lipsync/form/",
-            headers={"Authorization": "Bearer " + os.getenv("GOOEY_API_KEY")},
+            headers={"Authorization": "Bearer " + 'sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx'},
             files=files,
             data={"json": json.dumps(payload)},
         )
@@ -75,8 +67,10 @@ def create_app():
 
         return jsonify({'output_video_url': output_video_url}), 200
 
+ 
+ 
     return app
 
 if __name__ == '__main__':
     app = create_app()
-    app.run(host='0.0.0.0', port=5020, debug=True)
+    app.run(debug=True)
