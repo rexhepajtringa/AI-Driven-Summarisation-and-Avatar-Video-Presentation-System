@@ -2,3 +2,5 @@ Flask
 gTTS
 py_eureka_client
 Flask-Cors
+requests_mock
+unittest2

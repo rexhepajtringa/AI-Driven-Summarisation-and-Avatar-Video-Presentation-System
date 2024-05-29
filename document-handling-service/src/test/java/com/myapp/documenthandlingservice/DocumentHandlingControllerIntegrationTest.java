@@ -34,7 +34,6 @@ public class DocumentHandlingControllerIntegrationTest {
 
     @Test
     public void testUploadDocument_Pdf() throws Exception {
-        // Load the test.pdf file from the src/test/resources directory
         InputStream inputStream = getClass().getResourceAsStream("/test.pdf");
         MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", inputStream);
 
@@ -43,6 +42,30 @@ public class DocumentHandlingControllerIntegrationTest {
         mockMvc.perform(multipart("/document/uploadPdf").file(file))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Extracted text from PDF"));
+    }
+
+    @Test
+    public void testUploadDocument_Word() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream("/test.docx");
+        MockMultipartFile file = new MockMultipartFile("file", "test.docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", inputStream);
+
+        when(documentHandlingService.extractTextFromWord((MultipartFile) any(MultipartFile.class))).thenReturn("Extracted text from Word");
+
+        mockMvc.perform(multipart("/document/uploadPdf").file(file))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Extracted text from Word"));
+    }
+
+    @Test
+    public void testUploadDocument_Text() throws Exception {
+        InputStream inputStream = getClass().getResourceAsStream("/test.txt");
+        MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", inputStream);
+
+        when(documentHandlingService.extractTextFromTextFile((MultipartFile) any(MultipartFile.class))).thenReturn("Extracted text from Text");
+
+        mockMvc.perform(multipart("/document/uploadPdf").file(file))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Extracted text from Text"));
     }
 
     @Test
