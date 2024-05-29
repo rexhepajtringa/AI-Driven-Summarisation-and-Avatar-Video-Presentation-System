@@ -18,7 +18,7 @@ public class GptService {
     private final RestTemplate restTemplate;
     private final String openAiUrl = "https://api.openai.com/v1/chat/completions";
     private final String apiKey = "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"; 
-    
+
     public GptService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
@@ -28,9 +28,8 @@ public class GptService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(apiKey);
 
-        // Ensure summaryLength has a default value if it's null
         if (summaryLength == null) {
-            summaryLength = "medium"; // Default value
+            summaryLength = "medium";
         }
 
         Map<String, String> lengthInstructions = Map.of(
@@ -60,15 +59,16 @@ public class GptService {
 
         ObjectMapper objectMapper = new ObjectMapper();
         String body = objectMapper.writeValueAsString(payload);
-        System.out.println("Sending payload: " + body);
-
 
         HttpEntity<String> request = new HttpEntity<>(body, headers);
 
-        ResponseEntity<String> responseEntity = restTemplate.postForEntity(openAiUrl, request, String.class);
-        return extractContentFromResponse(responseEntity.getBody());         
+        try {
+            ResponseEntity<String> responseEntity = restTemplate.postForEntity(openAiUrl, request, String.class);
+            return extractContentFromResponse(responseEntity.getBody());
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while summarizing text", e);
+        }
     }
-
 
     private String extractContentFromResponse(String jsonResponse) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();

@@ -2,4 +2,9 @@ Flask
 requests
 py-eureka-client
 Flask-Cors
-
+python-dotenv
+werkzeug
+pytest
+Flask-Testing
+pytest-mock
+pytest-flask

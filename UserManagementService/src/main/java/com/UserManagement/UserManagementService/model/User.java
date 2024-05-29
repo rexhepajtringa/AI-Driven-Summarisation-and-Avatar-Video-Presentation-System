@@ -29,9 +29,6 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "users")
 public class User implements UserDetails {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -45,11 +42,11 @@ public class User implements UserDetails {
 	private String password;
 
 	@Column(nullable = false, unique = true)
-	private String email; // Added for user's email address
+	private String email; 
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Role role; // Added for managing user roles or permissions
+	private Role role; 
 
 
 
@@ -59,14 +56,11 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private LocalDateTime lastModified = LocalDateTime.now(); // Added to track updates
 
-//	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//	private List<SavedContent> savedContents = new ArrayList<>(); // Establishing relationship with SavedContent
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
 	@JsonBackReference
 	private List<SavedContent> savedContents;
 
-	// Getters and setters
 	public Long getId() {
 		return id;
 	}
@@ -190,8 +184,7 @@ public class User implements UserDetails {
 				&& Objects.equals(savedContents, other.savedContents) && Objects.equals(username, other.username);
 	}
 
-	// Constructor is private to enforce the use of the Builder.
-	private User(String username, String password, String email, Role role, LocalDateTime createdAt,
+	public User(String username, String password, String email, Role role, LocalDateTime createdAt,
 			LocalDateTime lastModified) {
 		this.username = username;
 		this.password = password;

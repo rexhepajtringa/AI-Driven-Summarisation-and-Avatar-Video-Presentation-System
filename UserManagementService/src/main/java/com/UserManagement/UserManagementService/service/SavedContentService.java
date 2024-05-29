@@ -61,12 +61,11 @@ public class SavedContentService {
         return savedContentRepository.save(content);
     }
     
-    private File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
-        File tempDir = new File(System.getProperty("java.io.tmpdir"));
-        File convFile = new File(tempDir, uniqueFileName);
-        try (FileOutputStream fos = new FileOutputStream(convFile)) {
-            fos.write(file.getBytes());
-        }
+    File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
+        File convFile = new File(uniqueFileName);
+        FileOutputStream fos = new FileOutputStream(convFile);
+        fos.write(file.getBytes());
+        fos.close();
         return convFile;
     }
 
@@ -79,25 +78,7 @@ public class SavedContentService {
 //        return convFile;
 //    }
     
-//    public SavedContent saveContent(Long userId, MultipartFile file, String title, ContentType contentType) throws IOException {
-//        String objectName = file.getOriginalFilename();
-//        File tempFile = convertMultiPartToFile(file);
-//        String fileUrl = uploadFile(tempFile, BUCKET_NAME, objectName);
-//        tempFile.delete();
-//
-//        Optional<User> userOptional = userRepository.findById(userId);
-//        if (!userOptional.isPresent()) {
-//            throw new RuntimeException("User not found");
-//        }
-//
-//        SavedContent content = new SavedContent();
-//        content.setTitle(title);
-//        content.setContentUrl(fileUrl);
-//        content.setContentType(contentType);
-//        content.setUser(userOptional.get());
-//        content.setCreatedAt(LocalDateTime.now());
-//        return savedContentRepository.save(content);
-//    }
+
 
     public List<SavedContent> getAllContentsByUserId(Long userId) {
         return savedContentRepository.findAllByUserId(userId);
@@ -111,7 +92,7 @@ public class SavedContentService {
         savedContentRepository.deleteById(id);
     }
 
-    private String uploadFile(File file, String bucketName, String objectName) throws IOException {
+    String uploadFile(File file, String bucketName, String objectName) throws IOException {
         BlobId blobId = BlobId.of(bucketName, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));

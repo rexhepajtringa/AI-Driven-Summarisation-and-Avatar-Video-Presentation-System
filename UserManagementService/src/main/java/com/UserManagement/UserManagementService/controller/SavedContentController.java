@@ -38,15 +38,7 @@ public class SavedContentController {
             return ResponseEntity.badRequest().body("User not found.");
         }
     }
-//
-//    @GetMapping("/{id}")
-//    public ResponseEntity<SavedContent> getContentById(@PathVariable Long id) {
-//        return savedContentService.getContentById(id)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
-//    
-    
+
     
 
     @GetMapping("/user/{userId}")
@@ -61,26 +53,6 @@ public class SavedContentController {
         return ResponseEntity.ok().build();
     }
 
-//    
-//    @GetMapping("/content/{id}")
-//    public ResponseEntity<String> getContentById(@PathVariable Long id) {
-//        Optional<SavedContent> optionalContent = savedContentService.getContentById(id);
-//        if (!optionalContent.isPresent()) {
-//            return ResponseEntity.notFound().build();
-//        }
-//
-//        try {
-//            SavedContent content = optionalContent.get();
-//            // Assuming getContentUrl() returns the full URL, you need to extract just the object name.
-//            String objectName = content.getContentUrl(); 
-//            String actualObjectName = objectName.substring(objectName.lastIndexOf('/') + 1);
-//            String textContent = savedContentService.downloadTextContent(actualObjectName);
-//            return ResponseEntity.ok(textContent);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
 
 
     @GetMapping("/content/{id}")
@@ -101,7 +73,6 @@ public class SavedContentController {
 
                 case VIDEO:
                 case AUDIO:
-                    // For binary data like video and audio, stream the data
                     byte[] data = savedContentService.downloadContent(objectName);
                     return ResponseEntity.ok()
                                          .contentType(MediaType.parseMediaType(content.getContentType().getMediaType()))

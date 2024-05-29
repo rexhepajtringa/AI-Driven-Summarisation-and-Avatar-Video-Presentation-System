@@ -6,7 +6,7 @@ import json
 
 
 
-def create_app():
+def create_app(voices_cache=None):
     app = Flask(__name__)
 
     # Eureka and ElevenLabs configuration
@@ -36,13 +36,8 @@ def create_app():
         response = requests.get(ELEVENLABS_VOICES_ENDPOINT, headers=headers)
         voices_cache = response.json().get("voices", [])
 
-    
-    
-
-
     def capitalize_label(label):
         if label and isinstance(label, str):
-            # The title() method capitalizes the first letter of each word
             return label.title()
         return label
 
@@ -58,9 +53,8 @@ def create_app():
                     capitalize_label(voice.get("labels", {}).get("gender")),
                     capitalize_label(voice.get("labels", {}).get("age")),
                     (capitalize_label(voice.get("labels", {}).get("use case", "")) + " Use Case").strip(),
-                    # ... Add other labels here
                 ]))
-            } for voice in voices_cache[:-1]
+            } for voice in voices_cache
         ]
         return jsonify(simplified_voices)
 
@@ -134,19 +128,13 @@ def create_app():
         )
 
         if synthesis_response.ok:
-            # Check if the response is JSON
             try:
                 json_response = synthesis_response.json()
                 return jsonify(json_response)
             except requests.exceptions.JSONDecodeError:
-                # If response is not JSON, return the raw response with the correct mimetype
                 return Response(synthesis_response.content, mimetype=synthesis_response.headers.get('Content-Type', 'application/octet-stream'))
         else:
-            # Handle error case
             return jsonify({"error": "Error synthesizing speech"}), synthesis_response.status_code
-
-
-
 
     return app
 
