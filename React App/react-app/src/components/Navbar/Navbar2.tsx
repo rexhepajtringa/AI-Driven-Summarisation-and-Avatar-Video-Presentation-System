@@ -35,10 +35,7 @@ const Navbar2: React.FC<Navbar2Props> = ({
 
   const [open, setOpen] = React.useState(false);
   const [isSignUp, setIsSignUp] = React.useState(false); // To toggle between Sign Up and Log In forms
-  const handleLoginSuccess = () => {
-    handleClose(); // Closes the modal
-    // Further actions can be placed here if necessary, such as showing other components
-  };
+ 
   const globalContext = useGlobalContent();
 
   if (!globalContext) {

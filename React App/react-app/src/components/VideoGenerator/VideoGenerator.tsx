@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
 import styles from "./VideoGenerator.module.css";
 import { useText } from "../../Context";
@@ -40,7 +40,7 @@ const VideoGenerator = () => {
     }
   }, [content.video]);
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files ? event.target.files[0] : null;
     if (file) {
       const reader = new FileReader();
@@ -128,7 +128,7 @@ const VideoGenerator = () => {
     }
   };
 
-  const urlToBlob = async (url) => {
+  const urlToBlob = async (url: string): Promise<Blob> => {
     if (url.startsWith("data:")) {
       const response = await fetch(url);
       const blob = await response.blob();

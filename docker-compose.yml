@@ -137,6 +137,12 @@ services:
     command: flask run --host=0.0.0.0 --reload
 
   
+  react-frontend:
+    image: trexhepaj/vite-react-frontend:latest
+    ports:
+      - "3000:80"  # Mapping container's port 80 to host's port 3000
+    networks:
+      - mmv-network
 
 networks:
   mmv-network:

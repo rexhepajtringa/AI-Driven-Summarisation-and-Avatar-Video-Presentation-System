@@ -36,7 +36,7 @@ const VoiceSelector: React.FC = () => {
   }
 
   // Now TypeScript knows globalContext is not null
-  const { content, setContent } = globalContext;
+  const { content } = globalContext;
 
   useEffect(() => {
     if (content.audio) {
@@ -149,34 +149,37 @@ const VoiceSelector: React.FC = () => {
       return;
     }
 
-    // Convert the audio source to a Blob and treat it as a file
-    const audioBlob = await fetch(audioSrc).then((res) => res.blob());
-    const formData = new FormData();
-    formData.append("file", audioBlob, "audio.mp3");
-    formData.append("title", audioTitle);
-    formData.append("contentType", "AUDIO");
+    if (audioSrc) {
+      const audioBlob = await fetch(audioSrc).then((res) => res.blob());
+      const formData = new FormData();
+      formData.append("file", audioBlob, "audio.mp3");
+      formData.append("title", audioTitle);
+      formData.append("contentType", "AUDIO");
 
-    try {
-      const response = await fetch(
-        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          body: formData,
-          credentials: "omit",
+      try {
+        const response = await fetch(
+          `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
+            credentials: "omit",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to save the audio content.");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to save the audio content.");
+        alert("Audio content saved successfully!");
+        setAudioTitle(""); // Clear title after saving
+      } catch (error) {
+        console.error("Error saving audio content:", error);
       }
-
-      alert("Audio content saved successfully!");
-      setAudioTitle(""); // Clear title after saving
-    } catch (error) {
-      console.error("Error saving audio content:", error);
+    } else {
+      console.error("Audio source is null");
     }
   };
 

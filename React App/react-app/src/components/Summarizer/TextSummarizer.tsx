@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Container,
   Row,
@@ -8,22 +8,29 @@ import {
   Card,
   Alert,
 } from "react-bootstrap";
-
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import { useText } from "../../Context";
 import Cookies from "js-cookie"; // Import js-cookie
 
-const RangeExample = ({ summaryLength, setSummaryLength }) => {
+interface RangeExampleProps {
+  summaryLength: string;
+  setSummaryLength: (length: string) => void;
+}
+
+const RangeExample: React.FC<RangeExampleProps> = ({
+  summaryLength,
+  setSummaryLength,
+}) => {
   const summaryLengthOptions = ["very short", "short", "medium", "long"];
 
   // Convert the descriptive value back to slider's numeric value for the UI
   const sliderValue = summaryLengthOptions.indexOf(summaryLength);
 
-  const handleSliderChange = (e) => {
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // Convert the slider's numeric value back to your descriptive value
-    const newValue = summaryLengthOptions[e.target.value];
+    const newValue = summaryLengthOptions[parseInt(e.target.value)];
     setSummaryLength(newValue);
   };
 
@@ -37,12 +44,12 @@ const RangeExample = ({ summaryLength, setSummaryLength }) => {
         onChange={handleSliderChange}
         className="custom-slider"
       />
-      <p>summary Will Be: {summaryLength}</p>
+      <p>Summary Will Be: {summaryLength}</p>
     </div>
   );
 };
 
-const TextSummarizer = () => {
+const TextSummarizer: React.FC = () => {
   const [inputText, setInputText] = useState("");
   const [summaryText, setSummaryText] = useState("");
   const [summaryLength, setSummaryLength] = useState("medium");
@@ -50,7 +57,6 @@ const TextSummarizer = () => {
   const [summaryTone, setSummaryTone] = useState("Neutral");
   const [title, setTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
-  const [file, setFile] = useState(null);
   const globalContext = useGlobalContent();
 
   // Check if globalContext is not null
@@ -61,9 +67,9 @@ const TextSummarizer = () => {
   }
 
   // Now TypeScript knows globalContext is not null
-  const { content, setContent } = globalContext;
+  const { content } = globalContext;
 
-  const handleSummaryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setSummaryText(e.target.value);
     setGlobalSummaryText(e.target.value);
   };
@@ -99,16 +105,18 @@ const TextSummarizer = () => {
     }
   };
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0];
-    handleFileChange(file);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFileChange(file);
+    }
   };
 
-  const handleDragOver = (e) => {
+  const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
   };
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const file = e.dataTransfer.files[0];
     handleFileChange(file);
@@ -136,7 +144,6 @@ const TextSummarizer = () => {
   const { setSummaryText: setGlobalSummaryText } = useText();
 
   const handleSummarize = async () => {
-    console.log(summaryLength);
     if (inputText) {
       const payload = {
         text: inputText,

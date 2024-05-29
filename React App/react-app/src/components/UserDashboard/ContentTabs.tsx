@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ListGroup, Tab, Nav, Modal, Card } from "react-bootstrap";
 import Cookies from "js-cookie";
 import styles from "./ContentTabs.module.css"; // Make sure the path is correct
@@ -14,13 +14,15 @@ interface Content {
   createdAt: string;
 }
 
-const ContentTabs = () => {
+const ContentTabs: React.FC = () => {
   const [summaries, setSummaries] = useState<Content[]>([]);
   const [audios, setAudios] = useState<Content[]>([]);
   const [videos, setVideos] = useState<Content[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [modalContent, setModalContent] = useState("");
-  const [modalContentType, setModalContentType] = useState("");
+  const [modalContent, setModalContent] = useState<string>("");
+  const [modalContentType, setModalContentType] = useState<
+    "TEXT" | "AUDIO" | "VIDEO" | ""
+  >("");
   const navigate = useNavigate(); // Hook to redirect
 
   const globalContent = useGlobalContent();
@@ -117,16 +119,20 @@ const ContentTabs = () => {
     </ListGroup>
   );
 
-  const handleUseContent = (type, contentData) => {
+  const handleUseContent = (
+    type: "TEXT" | "AUDIO" | "VIDEO",
+    contentData: string
+  ) => {
     setContent((prevState) => ({
       ...prevState,
-      [type]: contentData,
+      [type.toLowerCase()]: contentData,
     }));
     navigate("/"); // Redirect to the home page
   };
 
   // Render the button dynamically based on content type
-  const renderUseButton = (contentType) => {
+  const renderUseButton = (contentType: "TEXT" | "AUDIO" | "VIDEO" | "") => {
+    if (!contentType) return null; // Ensure contentType is not an empty string
     let buttonText = "";
     switch (contentType) {
       case "TEXT":
@@ -145,9 +151,7 @@ const ContentTabs = () => {
     return (
       <button
         className={`${styles.btn} ${styles.btnSuccess}`}
-        onClick={() =>
-          handleUseContent(contentType.toLowerCase(), modalContent)
-        }>
+        onClick={() => handleUseContent(contentType, modalContent)}>
         {buttonText}
       </button>
     );

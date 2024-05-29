@@ -1,10 +1,9 @@
-import { FunctionComponent, useEffect, useState } from "react";
+import { useEffect } from "react";
 import Navbar2 from "./components/Navbar/Navbar2.tsx";
 import TextSummarizer from "./components/Summarizer/TextSummarizer.tsx";
 import styles from "./App.module.css";
 import Cookies from "js-cookie";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UserDashboard from "./components/UserDashboard/UserDashboard.tsx";
 import VoiceSelector from "./components/VoiceSelector/VoiceSelector.tsx";
 import VideoGenerator from "./components/VideoGenerator/VideoGenerator.tsx";
 import StepIndicator from "./components/StepIndicator/StepIndicator.tsx";
