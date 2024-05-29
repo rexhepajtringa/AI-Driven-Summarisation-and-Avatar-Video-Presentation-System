@@ -3,3 +3,7 @@ requests
 py-eureka-client
 python-dotenv
 werkzeug
+pytest
+Flask-Testing
+pytest-mock
+pytest-flask

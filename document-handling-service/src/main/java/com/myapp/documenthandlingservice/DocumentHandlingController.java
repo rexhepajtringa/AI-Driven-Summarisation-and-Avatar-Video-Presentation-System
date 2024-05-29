@@ -19,7 +19,6 @@ public class DocumentHandlingController {
     @Autowired
     private DocumentHandlingService documentHandlingService;
 
-
     @PostMapping("/uploadPdf")
     public ResponseEntity<String> uploadDocument(@RequestParam("file") MultipartFile file) {
         try {
