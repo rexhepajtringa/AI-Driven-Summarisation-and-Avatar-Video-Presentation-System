@@ -61,7 +61,7 @@ public class SavedContentService {
         return savedContentRepository.save(content);
     }
     
-    private File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
+    File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
         File convFile = new File(uniqueFileName);
         FileOutputStream fos = new FileOutputStream(convFile);
         fos.write(file.getBytes());
@@ -83,7 +83,7 @@ public class SavedContentService {
         savedContentRepository.deleteById(id);
     }
 
-    private String uploadFile(File file, String bucketName, String objectName) throws IOException {
+    String uploadFile(File file, String bucketName, String objectName) throws IOException {
         BlobId blobId = BlobId.of(bucketName, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));

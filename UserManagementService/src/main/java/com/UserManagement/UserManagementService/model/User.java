@@ -184,7 +184,7 @@ public class User implements UserDetails {
 				&& Objects.equals(savedContents, other.savedContents) && Objects.equals(username, other.username);
 	}
 
-	private User(String username, String password, String email, Role role, LocalDateTime createdAt,
+	public User(String username, String password, String email, Role role, LocalDateTime createdAt,
 			LocalDateTime lastModified) {
 		this.username = username;
 		this.password = password;
