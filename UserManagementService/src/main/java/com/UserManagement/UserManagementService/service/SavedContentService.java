@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,12 +22,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Service
 public class SavedContentService {
 
     private static final String BUCKET_NAME = "summarizer_user_content";
     private static final Storage storage = StorageOptions.getDefaultInstance().getService();
+    private static final Logger logger = Logger.getLogger(SavedContentService.class.getName());
 
     @Autowired
     private SavedContentRepository savedContentRepository;
@@ -36,16 +38,19 @@ public class SavedContentService {
     @Autowired
     private UserRepository userRepository;
 
-    
-    public SavedContent saveContent(Long userId, MultipartFile file, String title, ContentType contentType) throws IOException {
+    public SavedContent saveContent(Long userId, MultipartFile file, String title, ContentType contentType)
+            throws IOException {
         // Generate a unique filename to prevent overwrites
         String originalFileName = file.getOriginalFilename();
-        String extension = originalFileName.contains(".") ? originalFileName.substring(originalFileName.lastIndexOf(".")) : "";
+        String extension = originalFileName.contains(".")
+                ? originalFileName.substring(originalFileName.lastIndexOf("."))
+                : "";
         String uniqueFileName = UUID.randomUUID().toString() + extension; // Ensure the file name is unique
-        
+
         File tempFile = convertMultiPartToFile(file, uniqueFileName);
         String fileUrl = uploadFile(tempFile, BUCKET_NAME, uniqueFileName);
-        tempFile.delete();
+        boolean isDeleted = tempFile.delete();
+        logger.log(Level.INFO, "Temp file deleted: {0}", isDeleted);
 
         Optional<User> userOptional = userRepository.findById(userId);
         if (!userOptional.isPresent()) {
@@ -60,25 +65,29 @@ public class SavedContentService {
         content.setCreatedAt(LocalDateTime.now());
         return savedContentRepository.save(content);
     }
-    
-    File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
-        File convFile = new File(uniqueFileName);
-        FileOutputStream fos = new FileOutputStream(convFile);
-        fos.write(file.getBytes());
-        fos.close();
+
+    private File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
+        File tempDir = new File("/app/tmp");
+        if (!tempDir.exists()) {
+            boolean dirsCreated = tempDir.mkdirs();
+            logger.log(Level.INFO, "Temp directory created: {0}", dirsCreated);
+        }
+
+        if (!tempDir.canWrite()) {
+            logger.log(Level.SEVERE, "Cannot write to temp directory: {0}", tempDir.getAbsolutePath());
+            throw new IOException("Cannot write to temp directory: " + tempDir.getAbsolutePath());
+        }
+
+        File convFile = new File(tempDir, uniqueFileName);
+        try (FileOutputStream fos = new FileOutputStream(convFile)) {
+            fos.write(file.getBytes());
+            logger.log(Level.INFO, "File written: {0}", convFile.getAbsolutePath());
+        } catch (IOException e) {
+            logger.log(Level.SEVERE, "Error writing file: {0}", e.getMessage());
+            throw e;
+        }
         return convFile;
     }
-
-    
-//    private File convertMultiPartToFile(MultipartFile file, String uniqueFileName) throws IOException {
-//        File convFile = new File(uniqueFileName);
-//        FileOutputStream fos = new FileOutputStream(convFile);
-//        fos.write(file.getBytes());
-//        fos.close();
-//        return convFile;
-//    }
-    
-
 
     public List<SavedContent> getAllContentsByUserId(Long userId) {
         return savedContentRepository.findAllByUserId(userId);
@@ -92,12 +101,13 @@ public class SavedContentService {
         savedContentRepository.deleteById(id);
     }
 
-    String uploadFile(File file, String bucketName, String objectName) throws IOException {
+    private String uploadFile(File file, String bucketName, String objectName) throws IOException {
         BlobId blobId = BlobId.of(bucketName, objectName);
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
         return String.format("https://storage.googleapis.com/%s/%s", bucketName, objectName);
     }
+
     public byte[] downloadContent(String objectName) throws IOException {
         Blob blob = storage.get(BlobId.of(BUCKET_NAME, objectName));
         if (blob == null) {
@@ -114,9 +124,8 @@ public class SavedContentService {
         return new String(blob.getContent(Blob.BlobSourceOption.generationMatch()));
     }
 
-    
-	public List<SavedContent> getAllContentsByUserIdAndType(Long userId, ContentType contentType) {
-		  return savedContentRepository.findAllByUserIdAndContentType(userId, contentType);
-	}
+    public List<SavedContent> getAllContentsByUserIdAndType(Long userId, ContentType contentType) {
+        return savedContentRepository.findAllByUserIdAndContentType(userId, contentType);
+    }
 
-	}
+}

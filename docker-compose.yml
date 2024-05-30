@@ -80,6 +80,7 @@ services:
 
   usermanagementservice:
     image: trexhepaj/mmv-usermanagementservice:0.0.1-SNAPSHOT
+    user: root
     mem_limit: 700m
     ports:
       - "8300:8300"
@@ -100,7 +101,7 @@ services:
       - SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL=true
     volumes:
       - ./summarizereports-f37e9f0f79bb.json:/summarizereports-f37e9f0f79bb.json
-      - ./app/tmp:/app/tmp 
+      - ./app/tmp:/app/tmp:rw
 
 
   postgres-db:
