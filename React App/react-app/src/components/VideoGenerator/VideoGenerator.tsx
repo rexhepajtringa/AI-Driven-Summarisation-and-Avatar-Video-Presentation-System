@@ -1,10 +1,17 @@
 import { useState, useEffect } from "react";
-import { Container, Row, Col, Button, Card, Form } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Card,
+  Form,
+  Spinner,
+} from "react-bootstrap";
 import styles from "./VideoGenerator.module.css";
-import { useText } from "../../Context";
 import ReactPlayer from "react-player";
 import Cookies from "js-cookie";
-import { useGlobalContent } from "../Utils/GlobalContentContext"; // Adjust the import path as necessary
+import { useGlobalContent } from "../Utils/GlobalContentContext"; // Adjust the import path
 
 const VideoGenerator = () => {
   const [selectedImage, setSelectedImage] = useState("");
@@ -16,24 +23,20 @@ const VideoGenerator = () => {
     "https://images.pexels.com/photos/2169434/pexels-photo-2169434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   ];
 
-  const { audio } = useText();
   const [videoUrl, setVideoUrl] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
-
-  // Access the global content state
+  const [isLoading, setIsLoading] = useState(false);
   const globalContext = useGlobalContent();
 
-  // Check if globalContext is not null
   if (!globalContext) {
     throw new Error(
       "useGlobalContent must be used within a GlobalContentProvider"
     );
   }
 
-  // Now TypeScript knows globalContext is not null
-  const { content } = globalContext;
+  const { content, updateVideo } = globalContext;
+  const audio = content.audio;
 
-  // Set the local videoUrl state when the global video state changes
   useEffect(() => {
     if (content.video) {
       setVideoUrl(content.video);
@@ -61,28 +64,37 @@ const VideoGenerator = () => {
       return;
     }
 
-    const audioBlob = await urlToBlob(audio);
+    setIsLoading(true); // Start loading
 
+    const audioBlob = await urlToBlob(audio);
     const imageBlob = await urlToBlob(selectedImage);
 
     const formData = new FormData();
     formData.append("image", imageBlob, "image.jpg");
     formData.append("audio", audioBlob, "audio.mp3");
 
-    fetch("http://localhost:8765/TEXT-TO-VOICE-SERVICE/lip-sync", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.output_video_url) {
-          setVideoUrl(data.output_video_url);
-        } else {
-          throw new Error("No video URL in response");
-          console.log(data);
+    try {
+      const response = await fetch(
+        "http://localhost:8765/TEXT-TO-VOICE-SERVICE/lip-sync",
+        {
+          method: "POST",
+          body: formData,
         }
-      })
-      .catch((error) => console.error("Error:", error));
+      );
+
+      const data = await response.json();
+
+      if (data.output_video_url) {
+        setVideoUrl(data.output_video_url);
+        updateVideo(data.output_video_url);
+      } else {
+        throw new Error("No video URL in response");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    } finally {
+      setIsLoading(false); // End loading
+    }
   };
 
   const saveVideoContent = async () => {
@@ -129,15 +141,9 @@ const VideoGenerator = () => {
   };
 
   const urlToBlob = async (url: string): Promise<Blob> => {
-    if (url.startsWith("data:")) {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      return blob;
-    } else {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      return blob;
-    }
+    const response = await fetch(url);
+    const blob = await response.blob();
+    return blob;
   };
 
   return (
@@ -153,7 +159,6 @@ const VideoGenerator = () => {
                 backgroundColor:
                   "rgba(255, 255, 255, 0.5)" /* Semi-transparent white background */,
                 padding: "20px" /* Adjust padding as needed */,
-                // Other styles you want to apply
               }}
               className={`${
                 videoUrl ? "videoContainerExpanded" : "videoContainer"
@@ -210,6 +215,11 @@ const VideoGenerator = () => {
                   onClick={uploadAvatarVideo}>
                   Generate Video
                 </Button>
+                {isLoading && (
+                  <Spinner animation="border" role="status" className="mt-3">
+                    <span className="visually-hidden">Loading...</span>
+                  </Spinner>
+                )}
                 {videoUrl && (
                   <>
                     <ReactPlayer url={videoUrl} controls={true} width="100%" />
@@ -234,7 +244,6 @@ const VideoGenerator = () => {
                             <Button
                               variant="secondary"
                               onClick={() => {
-                                // Ensure the link has the download attribute to download the file
                                 const a = document.createElement("a");
                                 a.href = videoUrl;
                                 a.download =

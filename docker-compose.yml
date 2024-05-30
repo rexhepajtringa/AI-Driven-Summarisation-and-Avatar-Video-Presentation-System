@@ -81,7 +81,7 @@ services:
   usermanagementservice:
     image: trexhepaj/mmv-usermanagementservice:0.0.1-SNAPSHOT
     user: root
-    mem_limit: 700m
+    mem_limit: 1500m
     ports:
       - "8300:8300"
     networks:
@@ -106,7 +106,7 @@ services:
 
   postgres-db:
     image: postgres:latest
-    mem_limit: 700m
+    mem_limit: 1500m
     environment:
       - POSTGRES_DB=users
       - POSTGRES_USER=postgres

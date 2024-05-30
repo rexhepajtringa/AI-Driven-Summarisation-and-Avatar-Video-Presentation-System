@@ -11,8 +11,8 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
-import { useText } from "../../Context";
-import Cookies from "js-cookie"; // Import js-cookie
+import Cookies from "js-cookie";
+import { Spinner } from "react-bootstrap";
 
 interface RangeExampleProps {
   summaryLength: string;
@@ -58,6 +58,7 @@ const TextSummarizer: React.FC = () => {
   const [title, setTitle] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
   const globalContext = useGlobalContent();
+  const [isLoading, setIsLoading] = useState(false);
 
   // Check if globalContext is not null
   if (!globalContext) {
@@ -67,19 +68,18 @@ const TextSummarizer: React.FC = () => {
   }
 
   // Now TypeScript knows globalContext is not null
-  const { content } = globalContext;
-
-  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setSummaryText(e.target.value);
-    setGlobalSummaryText(e.target.value);
-  };
+  const { content, updateText } = globalContext;
 
   useEffect(() => {
     if (content.text) {
-      // Set your local state to the content from context
       setSummaryText(content.text);
     }
   }, [content.text]);
+
+  const handleSummaryChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setSummaryText(e.target.value);
+    updateText(e.target.value);
+  };
 
   const handleFileChange = async (file: File) => {
     if (file) {
@@ -141,10 +141,9 @@ const TextSummarizer: React.FC = () => {
     }
   }, [summaryText]);
 
-  const { setSummaryText: setGlobalSummaryText } = useText();
-
   const handleSummarize = async () => {
     if (inputText) {
+      setIsLoading(true);
       const payload = {
         text: inputText,
         tone: summaryTone,
@@ -170,9 +169,11 @@ const TextSummarizer: React.FC = () => {
 
         const summary = await response.text();
         setSummaryText(summary);
-        setGlobalSummaryText(summary);
+        updateText(summary);
       } catch (error) {
         console.error("Error:", error);
+      } finally {
+        setIsLoading(false);
       }
     } else {
       alert("Please input text before summarizing");
@@ -218,7 +219,6 @@ const TextSummarizer: React.FC = () => {
 
       setSaveStatus("Summary saved successfully!");
       setTitle(""); // Optionally clear title after saving
-      setSummaryText(""); // Optionally clear summaryText as well
     } catch (error) {
       console.error("Error:", error);
       setSaveStatus("Failed to save summary.");
@@ -302,6 +302,11 @@ const TextSummarizer: React.FC = () => {
                     </Button>
                   </Col>
                 </Row>
+                {isLoading && (
+                  <Row className="justify-content-md-center mt-3">
+                    <Spinner animation="border" />
+                  </Row>
+                )}
               </Form>
             </Card.Body>
           </Card>
@@ -325,7 +330,6 @@ const TextSummarizer: React.FC = () => {
                   onChange={handleSummaryChange}
                 />
               </Form.Group>
-              {/* Place for title input */}
               <Form.Group controlId="summaryTitle">
                 <Form.Label>Title</Form.Label>
                 <Form.Control
@@ -335,14 +339,12 @@ const TextSummarizer: React.FC = () => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </Form.Group>
-              {/* Save button */}
               <Button
                 variant="success"
                 onClick={saveSummaryContent}
                 className="mt-2">
                 Save Summary
               </Button>
-              {/* Feedback message */}
               {saveStatus && (
                 <Alert
                   className="mt-2"
@@ -359,4 +361,5 @@ const TextSummarizer: React.FC = () => {
     </Container>
   );
 };
+
 export default TextSummarizer;

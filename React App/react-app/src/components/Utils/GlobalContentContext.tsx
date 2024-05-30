@@ -10,6 +10,9 @@ interface GlobalContentContextProps {
   content: ContentState;
   setContent: React.Dispatch<React.SetStateAction<ContentState>>;
   resetContent: () => void;
+  updateText: (text: string) => void; // Add this method
+  updateAudio: (audio: string) => void; // Add this method
+  updateVideo: (video: string) => void; // Add this method
 }
 
 // Create a context with a default value
@@ -46,9 +49,32 @@ export const GlobalContentProvider: React.FC<GlobalContentProviderProps> = ({
     setContent({ text: "", audio: "", video: "" });
   };
 
+  const updateText = (text: string) => {
+    setContent((prevState) => ({ ...prevState, text }));
+  };
+
+  const updateAudio = (audio: string) => {
+    setContent((prevState) => ({ ...prevState, audio }));
+  };
+
+  const updateVideo = (video: string) => {
+    setContent((prevState) => ({ ...prevState, video }));
+  };
+
+  // const resetContent = () => {
+  //   setContent({ text: "", audio: "", video: "" });
+  // };
+
   return (
     <GlobalContentContext.Provider
-      value={{ content, setContent, resetContent }}>
+      value={{
+        content,
+        setContent,
+        resetContent,
+        updateText,
+        updateAudio,
+        updateVideo,
+      }}>
       {children}
     </GlobalContentContext.Provider>
   );

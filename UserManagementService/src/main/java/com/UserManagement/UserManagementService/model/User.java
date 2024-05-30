@@ -42,13 +42,11 @@ public class User implements UserDetails {
 	private String password;
 
 	@Column(nullable = false, unique = true)
-	private String email; 
+	private String email;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
-	private Role role; 
-
-
+	private Role role;
 
 	@Column(nullable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
@@ -56,8 +54,7 @@ public class User implements UserDetails {
 	@Column(nullable = false)
 	private LocalDateTime lastModified = LocalDateTime.now(); // Added to track updates
 
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonBackReference
 	private List<SavedContent> savedContents;
 

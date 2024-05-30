@@ -98,7 +98,8 @@ public class SavedContentService {
     }
 
     public void deleteContent(Long id) {
-        savedContentRepository.deleteById(id);
+        Optional<SavedContent> content = savedContentRepository.findById(id);
+        content.ifPresent(savedContentRepository::delete);
     }
 
     private String uploadFile(File file, String bucketName, String objectName) throws IOException {
@@ -106,6 +107,15 @@ public class SavedContentService {
         BlobInfo blobInfo = BlobInfo.newBuilder(blobId).build();
         storage.create(blobInfo, Files.readAllBytes(file.toPath()));
         return String.format("https://storage.googleapis.com/%s/%s", bucketName, objectName);
+    }
+
+    public void deleteContentByUserIdAndContentId(Long userId, Long contentId) {
+        Optional<SavedContent> content = savedContentRepository.findByUserIdAndId(userId, contentId);
+        if (content.isPresent()) {
+            savedContentRepository.delete(content.get());
+        } else {
+            throw new RuntimeException("Content not found or does not belong to user");
+        }
     }
 
     public byte[] downloadContent(String objectName) throws IOException {

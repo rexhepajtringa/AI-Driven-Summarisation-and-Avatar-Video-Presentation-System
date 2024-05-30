@@ -1,0 +1,201 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+}
+
+.nav-link {
+line-height: 1.5;
+color: #495057;
+}
+
+.nav-link.active {
+color: #495057;
+background-color: #fff;
+border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.list-group-item {
+position: relative;
+display: block;
+background-color: #fff;
+}
+
+.nav-link.active, .nav-tabs .nav-item.show .nav-link {
+border: 1px solid #bdc3c9;
+border-bottom-color: transparent;
+margin-left: 0;
+border-top-left-radius: 0.25rem;
+border-top-right-radius: 0.25rem;
+position: relative;
+z-index: 1;
+}
+
+.d-flex {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.btn {
+display: inline-block;
+font-weight: 400;
+color: #212529;
+text-align: center;
+vertical-align: middle;
+user-select: none;
+background-color: transparent;
+border: 1px solid transparent;
+font-size: 1rem;
+line-height: 1.5;
+border-radius: .25rem;
+transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.btn-primary {
+color: #fff;
+width: 30px;
+background-color: #007bff;
+border-color: #007bff;
+}
+
+.btn-primary:hover {
+color: #fff;
+background-color: #0069d9;
+border-color: #0062cc;
+}
+
+.btn-secondary {
+color: #fff;
+background-color: #6c757d;
+border-color: #6c757d;
+}
+
+.btn-secondary:hover {
+color: #fff;
+background-color: #5a6268;
+border-color: #545b62;
+}
+
+.modal-content {
+position: relative;
+display: flex;
+flex-direction: column;
+width: 100%;
+pointer-events: auto;
+background-color: #fff;
+background-clip: padding-box;
+border: 1px solid rgba(0,0,0,.2);
+border-radius: .3rem;
+outline: 0;
+}
+
+@media (max-width: 576px) {
+.nav-link {
+  padding: .5rem .5rem;
+}
+
+.btn {
+  padding: .25rem .5rem;
+  font-size: .875rem;
+}
+}
+
+.listGroup {
+width: 100%;
+padding-top: 0;
+margin-top: 0;
+border-top-left-radius: 0;
+border-top-right-radius: 0;
+}
+
+.listGroupItem {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 0.5rem 1rem;
+}
+
+.flexBetween {
+flex: 1;
+}
+
+.btnPrimary {
+background-color: #007bff;
+color: white;
+border: none;
+padding: 0.375rem 0.75rem;
+margin-left: 1rem;
+cursor: pointer;
+width: 130px;
+}
+
+.contentTitle, .contentDate {
+margin-bottom: 0;
+}
+
+.nav, .mb3 {
+margin-bottom: 0;
+}
+
+.cardContainer {
+border: 1px solid #dee2e6;
+border-radius: 0.25rem;
+margin-bottom: 0;
+margin-right: 5%;
+margin-left: 5%;
+}
+
+.cardHeader {
+padding: 0;
+border-bottom: none;
+}
+
+.navTabs {
+border-bottom: 1px solid #dee2e6;
+margin-left: 0px;
+margin-right: 0px;
+background-color: #eeecee;
+}
+
+.listGroup {
+border: none;
+}
+
+.listGroup .list-group-item {
+border: none;
+}
+
+.listGroup .list-group-item {
+padding-left: 0;
+padding-right: 0;
+}
+
+.nav-link.active {
+border-bottom: 0;
+}
+
+@media (max-width: 768px) {
+}
+
+.btnDanger {
+color: #fff;
+background-color: #dc3545;
+border: none;
+padding: 0.375rem 0.75rem;
+margin-left: 1rem;
+cursor: pointer;
+width: 40px;
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+.btnDanger:hover {
+background-color: #c82333;
+}
+
+.buttonGroup {
+display: flex;
+gap: 10px;
+}

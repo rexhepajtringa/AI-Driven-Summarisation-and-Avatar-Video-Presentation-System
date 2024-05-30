@@ -26,7 +26,7 @@ public class SavedContentController {
 
     @PostMapping("/{userId}")
     public ResponseEntity<?> saveContent(@PathVariable Long userId, @RequestParam("file") MultipartFile file,
-                                         @RequestParam("title") String title, @RequestParam("contentType") ContentType contentType) {
+            @RequestParam("title") String title, @RequestParam("contentType") ContentType contentType) {
         try {
             SavedContent savedContent = savedContentService.saveContent(userId, file, title, contentType);
             return ResponseEntity.ok(savedContent);
@@ -39,21 +39,17 @@ public class SavedContentController {
         }
     }
 
-    
-
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<SavedContent>> getAllContentsByUserId(@PathVariable Long userId) {
         List<SavedContent> contents = savedContentService.getAllContentsByUserId(userId);
         return ResponseEntity.ok(contents);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteContent(@PathVariable Long id) {
-        savedContentService.deleteContent(id);
-        return ResponseEntity.ok().build();
-    }
-
-
+    // @DeleteMapping("/{id}")
+    // public ResponseEntity<Void> deleteContent(@PathVariable Long id) {
+    // savedContentService.deleteContent(id);
+    // return ResponseEntity.ok().build();
+    // }
 
     @GetMapping("/content/{id}")
     public ResponseEntity<?> getContentById(@PathVariable Long id) {
@@ -75,8 +71,8 @@ public class SavedContentController {
                 case AUDIO:
                     byte[] data = savedContentService.downloadContent(objectName);
                     return ResponseEntity.ok()
-                                         .contentType(MediaType.parseMediaType(content.getContentType().getMediaType()))
-                                         .body(data);
+                            .contentType(MediaType.parseMediaType(content.getContentType().getMediaType()))
+                            .body(data);
 
                 default:
                     return ResponseEntity.status(HttpStatus.UNSUPPORTED_MEDIA_TYPE).build();
@@ -87,10 +83,29 @@ public class SavedContentController {
         }
     }
 
+    @DeleteMapping("/database/{id}")
+    public ResponseEntity<Void> deleteContent(@PathVariable Long id) {
+        try {
+            savedContentService.deleteContent(id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
-    
+    @DeleteMapping("/user/{userId}/content/{contentId}")
+    public ResponseEntity<Void> deleteContent(@PathVariable Long userId, @PathVariable Long contentId) {
+        try {
+            savedContentService.deleteContentByUserIdAndContentId(userId, contentId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @GetMapping("/user/{userId}/type/{contentType}")
-    public ResponseEntity<List<SavedContent>> getAllContentsByUserIdAndType(@PathVariable Long userId, @PathVariable ContentType contentType) {
+    public ResponseEntity<List<SavedContent>> getAllContentsByUserIdAndType(@PathVariable Long userId,
+            @PathVariable ContentType contentType) {
         try {
             List<SavedContent> contents = savedContentService.getAllContentsByUserIdAndType(userId, contentType);
             return ResponseEntity.ok(contents);

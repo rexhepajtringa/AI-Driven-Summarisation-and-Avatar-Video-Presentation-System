@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./VoiceSelector.module.css"; // Make sure to use CSS modules for scoping
 import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is imported
-import { useText } from "../../Context";
 import { AudioPlayer } from "react-audio-play"; // Make sure to import AudioPlayer
 import Cookies from "js-cookie"; // Import js-cookie
-import { Button, Form, Col, Row } from "react-bootstrap";
+import { Button, Form, Col, Row, Spinner } from "react-bootstrap";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 
 interface Voice {
@@ -22,21 +21,20 @@ const VoiceSelector: React.FC = () => {
   const audioRefs = useRef<{ [url: string]: HTMLAudioElement }>({});
   const voicesPerPage = 5;
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
-  const { setGlobalAudio } = useText();
+  const [audioKey, setAudioKey] = useState<number>(0); // State to force AudioPlayer re-render
+  const [isLoading, setIsLoading] = useState<boolean>(false); // State to track loading status
 
-  const { summaryText } = useText(); // Access the summaryText from the context
   const [audioTitle, setAudioTitle] = useState("");
   const globalContext = useGlobalContent();
 
-  // Check if globalContext is not null
   if (!globalContext) {
     throw new Error(
       "useGlobalContent must be used within a GlobalContentProvider"
     );
   }
 
-  // Now TypeScript knows globalContext is not null
   const { content } = globalContext;
+  const summaryText = content.text;
 
   useEffect(() => {
     if (content.audio) {
@@ -69,11 +67,12 @@ const VoiceSelector: React.FC = () => {
   }, []);
 
   const handleVoiceSelection = (voiceId: string) => {
-    // If there's no summaryText, we can't proceed
     if (!summaryText) {
       alert("Please enter or generate summary text first.");
       return;
     }
+
+    setIsLoading(true); // Start loading
 
     const postData = {
       voice_id: voiceId,
@@ -95,12 +94,15 @@ const VoiceSelector: React.FC = () => {
       })
       .then((blob) => {
         const audioURL = URL.createObjectURL(blob);
-        setAudioSrc(audioURL); // This will now trigger the rendering of the AudioPlayer
-        setGlobalAudio(audioURL);
-        // Set the audio source state
+        setAudioSrc(audioURL);
+        setAudioKey((prevKey) => prevKey + 1); // Force re-render of AudioPlayer
+        globalContext.updateAudio(audioURL);
       })
       .catch((error) => {
         console.error("Error during text-to-speech processing:", error);
+      })
+      .finally(() => {
+        setIsLoading(false); // End loading
       });
   };
 
@@ -133,7 +135,6 @@ const VoiceSelector: React.FC = () => {
 
   const selectVoice = (voice: Voice) => {
     setSelectedVoiceId(voice.voice_id);
-    // Add any additional logic here if needed, such as preparing for a POST request
   };
 
   const saveAudioContent = async () => {
@@ -200,7 +201,7 @@ const VoiceSelector: React.FC = () => {
                   ? styles.selectedVoiceCard
                   : ""
               }`}
-              key={voice.voice_id} // Updated to use voice_id for key
+              key={voice.voice_id}
               onClick={() => selectVoice(voice)}
               style={{
                 boxShadow:
@@ -218,7 +219,7 @@ const VoiceSelector: React.FC = () => {
                     name="check"
                     checked={currentPlaying === voice.preview_url}
                     onChange={() => togglePlay(voice)}
-                    onClick={(e) => e.stopPropagation()} // Prevent triggering multiple times
+                    onClick={(e) => e.stopPropagation()}
                   />
                   <label htmlFor={`playpause${index}`} tabIndex={1}></label>
                 </div>
@@ -261,10 +262,18 @@ const VoiceSelector: React.FC = () => {
             Generate Speech
           </Button>
         </Col>
+        {isLoading && (
+          <Row className="justify-content-center mt-3">
+            <Spinner animation="border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </Spinner>
+          </Row>
+        )}
         {audioSrc && (
           <Row className="justify-content-center">
             <Col md={12} className="d-flex flex-column align-items-center">
               <AudioPlayer
+                key={audioKey} // Use audioKey to force re-render
                 style={{ margin: "auto", padding: "2em" }}
                 className={styles.customstyle}
                 src={audioSrc} // Use the audioSrc state for the source
@@ -274,7 +283,7 @@ const VoiceSelector: React.FC = () => {
                 placeholder="Enter title for the audio"
                 value={audioTitle}
                 onChange={(e) => setAudioTitle(e.target.value)}
-                className="my-3 w-50" // Adjust the width as needed
+                className="my-3 w-50"
               />
               <Button
                 variant="primary"
@@ -285,13 +294,12 @@ const VoiceSelector: React.FC = () => {
               <Button
                 variant="secondary"
                 onClick={() => {
-                  // Create a link and click it to download the audio
                   const link = document.createElement("a");
                   link.href = audioSrc;
                   link.setAttribute(
                     "download",
                     audioTitle || "downloaded_audio.mp3"
-                  ); // Use the title or a default filename
+                  );
                   document.body.appendChild(link);
                   link.click();
                   document.body.removeChild(link);

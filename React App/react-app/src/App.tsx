@@ -9,7 +9,7 @@ import VideoGenerator from "./components/VideoGenerator/VideoGenerator.tsx";
 import StepIndicator from "./components/StepIndicator/StepIndicator.tsx";
 import { GlobalContentProvider } from "./components/Utils/GlobalContentContext.tsx";
 import React from "react";
-import ContentTabs from "./components/UserDashboard/ContentTabs.tsx";
+import UserDashboard from "./components/UserDashboard/UserDashboard.tsx";
 import HomePage from "./components/HomePage/HomePage.tsx"; // Make sure to have this component created
 import { TextProvider } from "./Context";
 
@@ -73,7 +73,7 @@ const App: React.FC = () => {
                 ) // Show HomePage if not logged in
               }
             />
-            <Route path="/user-dashboard" element={<ContentTabs />} />
+            <Route path="/user-dashboard" element={<UserDashboard />} />
           </Routes>
         </div>
       </Router>

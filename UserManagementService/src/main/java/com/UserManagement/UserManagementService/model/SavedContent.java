@@ -2,7 +2,6 @@ package com.UserManagement.UserManagementService.model;
 
 import java.time.LocalDateTime;
 
-
 import com.UserManagement.UserManagementService.ContentType;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -25,10 +24,10 @@ public class SavedContent {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	  @ManyToOne
-	    @JoinColumn(name = "user_id", nullable = false)
-	    @JsonManagedReference
-	    private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	@JsonManagedReference
+	private User user;
 
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
@@ -63,7 +62,6 @@ public class SavedContent {
 		return contentType;
 	}
 
-	
 	public void setContentType(ContentType contentType) {
 		this.contentType = contentType;
 	}
