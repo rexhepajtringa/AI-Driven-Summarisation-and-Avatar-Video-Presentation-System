@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { ListGroup, Tab, Nav, Modal, Card } from "react-bootstrap";
 import Cookies from "js-cookie";
-import styles from "./UserDashboard.module.css"; // Make sure the path is correct
+import styles from "./UserDashboard.module.css"; 
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import { useNavigate } from "react-router-dom";
-import { FaTrash } from "react-icons/fa"; // Import the trash icon
+import { FaTrash } from "react-icons/fa"; 
 import config from "config";
 
 interface Content {
@@ -23,7 +23,7 @@ const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalContentType, setModalContentType] = useState("");
-  const navigate = useNavigate(); // Hook to redirect
+  const navigate = useNavigate(); 
 
   const globalContent = useGlobalContent();
 
@@ -82,7 +82,7 @@ const UserDashboard = () => {
         const textContent = await response.text();
         setModalContent(textContent);
         setModalContentType("TEXT");
-        globalContent.updateText(textContent); // Update global context
+        globalContent.updateText(textContent); 
       } else if (
         content.contentType === "AUDIO" ||
         content.contentType === "VIDEO"
@@ -91,7 +91,7 @@ const UserDashboard = () => {
         const url = URL.createObjectURL(blob);
         setModalContent(url);
         setModalContentType(content.contentType);
-        globalContent.updateAudio(url); // Update global context
+        globalContent.updateAudio(url);
       } else {
         throw new Error("Unsupported content type");
       }
@@ -186,7 +186,7 @@ const UserDashboard = () => {
       ...prevState,
       [type.toLowerCase()]: contentData,
     }));
-    navigate("/"); // Redirect to the home page
+    navigate("/"); 
   };
 
   const renderUseButton = (contentType: ContentType) => {

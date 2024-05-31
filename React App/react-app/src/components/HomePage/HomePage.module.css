@@ -1,4 +1,3 @@
-/* HomePage.module.css */
 .background {
     height: 100vh;
     display: flex;
@@ -27,18 +26,18 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px; /* Adjust gap as needed */
+    gap: 10px;
     margin-bottom: 20px;
   }
   
   .icon {
-    font-size: 2.5rem; /* Adjust icon size as needed */
-    color: #2c3e50; /* Adjust icon color as needed */
+    font-size: 2.5rem; 
+    color: #2c3e50;
   }
   
   .arrowIcon {
-    font-size: 2rem; /* Adjust arrow icon size as needed */
-    color: #7f8c8d; /* Adjust arrow icon color as needed */
+    font-size: 2rem; 
+    color: #7f8c8d; 
   }
   
  

@@ -40,11 +40,6 @@ public class JwtService {
 				.signWith(getSignInKey(), SignatureAlgorithm.HS256).compact();
 	}
 
-	// public String generateRefreshToken(UserDetails userDetails) {
-	// long refreshExpiration;
-	// return buildToken(new HashMap<>(), userDetails, refreshExpiration);
-	// }
-
 	private String buildToken(final Map<String, Object> extraClaims, final UserDetails userDetails,
 			final long expiration) {
 		return Jwts.builder().setClaims(extraClaims).setSubject(userDetails.getUsername())

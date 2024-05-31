@@ -1,14 +1,13 @@
-/* StepIndicator.module.css */
 .container {
-    text-align: center; /* Centers the text */
-    background-color: rgba(255, 255, 255, 0.35); /* Half-transparent white background */
-    color: #040d3c; /* Sets the text color */
-    font-size: 1rem; /* Big font size */
-    -webkit-text-stroke: 0.1px #ffffff; /* Adds a thin white text stroke for WebKit browsers */
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); /* Adds a shadow to the container to create a floating card effect */
-    border-radius: 10px; /* Rounds the corners of the container */
-    margin: 20px; /* Adds some space around the component */
-    margin-left: 10%; /* Removes the left margin */
-    margin-right: 10%; /* Removes the right margin */
-    padding: 20px; /* Adds padding inside the container */
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.35); 
+    color: #040d3c; 
+    font-size: 1rem; 
+    -webkit-text-stroke: 0.1px #ffffff; 
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2); 
+    border-radius: 10px; 
+    margin: 20px; 
+    margin-left: 10%;
+    margin-right: 10%; 
+    padding: 20px; 
 }

@@ -52,7 +52,7 @@ public class User implements UserDetails {
 	private LocalDateTime createdAt = LocalDateTime.now();
 
 	@Column(nullable = false)
-	private LocalDateTime lastModified = LocalDateTime.now(); // Added to track updates
+	private LocalDateTime lastModified = LocalDateTime.now();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonBackReference

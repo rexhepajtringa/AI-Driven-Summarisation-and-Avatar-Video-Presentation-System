@@ -119,14 +119,14 @@ services:
 
   text-to-voice-service:
     build:
-      context: ./text-to-voice  # Adjusted to the correct relative path
+      context: ./text-to-voice  
     image: text-to-voice:latest
     mem_limit: 700m
     ports:
       - "5000:5000"
     volumes:
-      - ./text-to-voice:/app  # Mounts the Python service directory to /app in the container
-      - ./text-to-voice/audio_files:/app/audio_files  # Ensures audio_files is persistent
+      - ./text-to-voice:/app 
+      - ./text-to-voice/audio_files:/app/audio_files  
     networks:
       - mmv-network
     depends_on:
@@ -141,7 +141,7 @@ services:
   react-frontend:
     image: trexhepaj/vite-react-frontend:latest
     ports:
-      - "3000:80"  # Mapping container's port 80 to host's port 3000
+      - "3000:80"  
     networks:
       - mmv-network
 
@@ -152,5 +152,5 @@ networks:
 volumes:
   postgres-data:
   app-tmp:
-  avatar-uploads:  # This defines the volume within Docker Compose
+  avatar-uploads:  
     driver: local

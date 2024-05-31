@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./VoiceSelector.module.css"; // Make sure to use CSS modules for scoping
-import "bootstrap/dist/css/bootstrap.min.css"; // Ensure Bootstrap CSS is imported
-import { AudioPlayer } from "react-audio-play"; // Make sure to import AudioPlayer
-import Cookies from "js-cookie"; // Import js-cookie
+import styles from "./VoiceSelector.module.css"; 
+import "bootstrap/dist/css/bootstrap.min.css"; 
+import { AudioPlayer } from "react-audio-play"; 
+import Cookies from "js-cookie"; 
 import { Button, Form, Col, Row, Spinner } from "react-bootstrap";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import config from "config";
@@ -18,12 +18,12 @@ const VoiceSelector: React.FC = () => {
   const [voices, setVoices] = useState<Voice[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null); // State to track the selected voice ID
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null); 
   const audioRefs = useRef<{ [url: string]: HTMLAudioElement }>({});
   const voicesPerPage = 5;
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
-  const [audioKey, setAudioKey] = useState<number>(0); // State to force AudioPlayer re-render
-  const [isLoading, setIsLoading] = useState<boolean>(false); // State to track loading status
+  const [audioKey, setAudioKey] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState<boolean>(false); 
 
   const [audioTitle, setAudioTitle] = useState("");
   const globalContext = useGlobalContent();
@@ -50,7 +50,6 @@ const VoiceSelector: React.FC = () => {
       );
       const data = await response.json();
       setVoices(data);
-      // Initialize audio elements for all voices
       data.forEach((voice: Voice) => {
         const audio = new Audio(voice.preview_url);
         audio.addEventListener("ended", () => setCurrentPlaying(null));
@@ -73,7 +72,7 @@ const VoiceSelector: React.FC = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
+    setIsLoading(true); 
 
     const postData = {
       voice_id: voiceId,
@@ -96,14 +95,14 @@ const VoiceSelector: React.FC = () => {
       .then((blob) => {
         const audioURL = URL.createObjectURL(blob);
         setAudioSrc(audioURL);
-        setAudioKey((prevKey) => prevKey + 1); // Force re-render of AudioPlayer
+        setAudioKey((prevKey) => prevKey + 1); 
         globalContext.updateAudio(audioURL);
       })
       .catch((error) => {
         console.error("Error during text-to-speech processing:", error);
       })
       .finally(() => {
-        setIsLoading(false); // End loading
+        setIsLoading(false);
       });
   };
 
@@ -176,7 +175,7 @@ const VoiceSelector: React.FC = () => {
         }
 
         alert("Audio content saved successfully!");
-        setAudioTitle(""); // Clear title after saving
+        setAudioTitle(""); 
       } catch (error) {
         console.error("Error saving audio content:", error);
       }
@@ -274,10 +273,10 @@ const VoiceSelector: React.FC = () => {
           <Row className="justify-content-center">
             <Col md={12} className="d-flex flex-column align-items-center">
               <AudioPlayer
-                key={audioKey} // Use audioKey to force re-render
+                key={audioKey} 
                 style={{ margin: "auto", padding: "2em" }}
                 className={styles.customstyle}
-                src={audioSrc} // Use the audioSrc state for the source
+                src={audioSrc} 
               />
               <Form.Control
                 type="text"

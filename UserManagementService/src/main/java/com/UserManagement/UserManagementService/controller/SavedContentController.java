@@ -45,11 +45,6 @@ public class SavedContentController {
         return ResponseEntity.ok(contents);
     }
 
-    // @DeleteMapping("/{id}")
-    // public ResponseEntity<Void> deleteContent(@PathVariable Long id) {
-    // savedContentService.deleteContent(id);
-    // return ResponseEntity.ok().build();
-    // }
 
     @GetMapping("/content/{id}")
     public ResponseEntity<?> getContentById(@PathVariable Long id) {

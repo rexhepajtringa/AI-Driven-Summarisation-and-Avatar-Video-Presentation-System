@@ -17,7 +17,6 @@ def create_app(voices_cache=None):
     ELEVENLABS_API_KEY = '94b13cc597a918c00ed33c585d887e65'
     GOOEY_API_KEY='sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx'
 
-    # Initialize Eureka client
     eureka_client.init(
         eureka_server=eureka_server,
         app_name=app_name,
@@ -31,7 +30,7 @@ def create_app(voices_cache=None):
         # Load voices cache
         headers = {
             "Content-Type": "application/json",
-            "xi-api-key": ELEVENLABS_API_KEY  # Correct API key header
+            "xi-api-key": ELEVENLABS_API_KEY  
         }
         response = requests.get(ELEVENLABS_VOICES_ENDPOINT, headers=headers)
         voices_cache = response.json().get("voices", [])

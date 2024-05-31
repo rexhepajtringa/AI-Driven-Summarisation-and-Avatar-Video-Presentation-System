@@ -6,7 +6,6 @@ public class SummaryRequest {
     private String sentenceLength;
     private Boolean includeReferences;
 
-    // Getters and setters
     public String getText() {
         return text;
     }

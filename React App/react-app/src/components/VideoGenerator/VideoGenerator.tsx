@@ -11,7 +11,7 @@ import {
 import styles from "./VideoGenerator.module.css";
 import ReactPlayer from "react-player";
 import Cookies from "js-cookie";
-import { useGlobalContent } from "../Utils/GlobalContentContext"; // Adjust the import path
+import { useGlobalContent } from "../Utils/GlobalContentContext"; 
 import config from "config";
 
 const VideoGenerator = () => {
@@ -65,8 +65,7 @@ const VideoGenerator = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
-
+    setIsLoading(true); 
     const audioBlob = await urlToBlob(audio);
     const imageBlob = await urlToBlob(selectedImage);
 
@@ -135,7 +134,7 @@ const VideoGenerator = () => {
       }
 
       alert("Video content saved successfully!");
-      setVideoTitle(""); // Clear title after saving
+      setVideoTitle(""); 
     } catch (error) {
       console.error("Error saving video content:", error);
     }

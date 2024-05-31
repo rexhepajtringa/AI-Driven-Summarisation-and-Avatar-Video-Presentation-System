@@ -12,13 +12,13 @@ import {
   Backdrop,
 } from "@mui/material";
 
-import { indigo } from "@mui/material/colors"; // Importing the indigo color
-import LoginIcon from "@mui/icons-material/Login"; // Importing the login icon
-import AuthForm from "./AuthForm"; // Import the AuthForm component
+import { indigo } from "@mui/material/colors"; 
+import LoginIcon from "@mui/icons-material/Login"; 
+import AuthForm from "./AuthForm";
 import Cookies from "js-cookie";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 
-// Define the types of props Navbar2 accepts
+
 interface Navbar2Props {
   isLoggedIn: boolean;
   onLoginSuccess: () => void;
@@ -34,7 +34,7 @@ const Navbar2: React.FC<Navbar2Props> = ({
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
-  const [isSignUp, setIsSignUp] = React.useState(false); // To toggle between Sign Up and Log In forms
+  const [isSignUp, setIsSignUp] = React.useState(false); 
  
   const globalContext = useGlobalContent();
 
@@ -45,7 +45,7 @@ const Navbar2: React.FC<Navbar2Props> = ({
   }
 
   const modalStyle = {
-    position: "absolute" as const, // 'as const' is used for type assertion here
+    position: "absolute" as const, 
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
@@ -172,7 +172,6 @@ const Navbar2: React.FC<Navbar2Props> = ({
                   variant="contained"
                   onClick={() => {
                     onLogout();
-                    // Clear global context states
                     if (globalContext) {
                       globalContext.resetContent();
                     }

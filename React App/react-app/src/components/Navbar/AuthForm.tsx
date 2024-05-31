@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import config from "config";
 
 interface AuthFormProps {
-  isSignUp: boolean; // True for Sign Up, False for Login
-  onLoginSuccess?: () => void; // Optional function that will be called on successful login
+  isSignUp: boolean;
+  onLoginSuccess?: () => void;
 }
 
 const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onLoginSuccess }) => {

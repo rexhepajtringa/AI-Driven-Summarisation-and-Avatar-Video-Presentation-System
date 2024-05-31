@@ -1,26 +1,20 @@
 
 .selectedImage {
-    border: 4px solid rgb(255, 0, 0); /* Red border remains */
+    border: 4px solid rgb(255, 0, 0); 
     box-shadow: 
-      0 0 15px 5px rgba(255, 0, 0, 0.5), /* Outer softer glow */
-      0 0 5px 2px rgba(255, 0, 0, 0.1); /* Inner stronger glow */
+      0 0 15px 5px rgba(255, 0, 0, 0.5), 
+      0 0 5px 2px rgba(255, 0, 0, 0.1); 
     }
   
-    /* VideoGenerator.module.css */
 .selectedImage {
-  border: 4px solid rgb(255, 0, 0); /* Red border remains */
+  border: 4px solid rgb(255, 0, 0); 
   box-shadow: 
-    0 0 15px 5px rgba(255, 0, 0, 0.5), /* Outer softer glow */
-    0 0 5px 2px rgba(255, 0, 0, 0.1); /* Inner stronger glow */
+    0 0 15px 5px rgba(255, 0, 0, 0.5), 
+    0 0 5px 2px rgba(255, 0, 0, 0.1); 
 }
 
-/* Add styles for the video container that will conditionally apply based on the presence of the video */
 .videoContainer {
-  transition: all 0.3s ease; /* Smooth transition for the height change */
-  overflow: hidden; /* Keeps the content from overflowing */
-  /* Initial height will be auto, but you can set a min-height if necessary */
+  transition: all 0.3s ease; 
+  overflow: hidden; 
 }
 
-.videoContainerExpanded {
-  /* No specific height set, it will grow as needed to fit content */
-}

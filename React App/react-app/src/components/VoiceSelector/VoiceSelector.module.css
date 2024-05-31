@@ -22,29 +22,25 @@
 .voiceSelector {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem; /* Reduced gap */
+  gap: 0.5rem;
   justify-content: center;
 }
-/* ... existing styles */
 
-/* Center the form and button horizontally */
 .justify-content-center {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Spacing for the form control and button */
 .my-3 {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
-/* ... any additional styles */
 
 
 .voiceCard {
-  width: calc(20% - 0.5rem); /* Adjusted width */
+  width: calc(20% - 0.5rem);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   overflow: hidden;
@@ -59,9 +55,9 @@
 }
 
 .colorBlock {
-  padding: 0.5rem; /* Reduced padding */
+  padding: 0.5rem; 
   color: #fff;
-  height: 150px; /* Reduced height */
+  height: 150px; 
   display: flex;
   align-items: center;
   justify-content: center;
@@ -77,28 +73,28 @@
 }
 
 .voiceInfo {
-  padding: 0.25rem 0.5rem; /* Reduced padding */
+  padding: 0.25rem 0.5rem; 
   background: #fff;
 }
 
 .voiceName {
   margin: 0;
   font-weight: bold;
-  font-size: 0.8rem; /* Reduced font size */
+  font-size: 0.8rem; 
 }
 
 .selectedVoiceCard {
-  border: 4px solid rgb(255, 0, 0); /* Red border remains */
+  border: 4px solid rgb(255, 0, 0); 
   box-shadow: 
-    0 0 15px 5px rgba(255, 0, 0, 0.8), /* Outer softer glow */
-    0 0 5px 2px rgba(255, 0, 0, 0.9); /* Inner stronger glow */
+    0 0 15px 5px rgba(255, 0, 0, 0.8), 
+    0 0 5px 2px rgba(255, 0, 0, 0.9); 
 }
 
 
 
 .voiceUrl {
   margin: 0;
-  font-size: 0.6rem; /* Reduced font size */
+  font-size: 0.6rem;
   word-break: break-word;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -107,8 +103,8 @@
 
 .playpause {
   position: relative;
-  width: 40px; /* Adjusted size */
-  height: 40px; /* Adjusted size */
+  width: 40px;
+  height: 40px; 
 }
 
 .playpause label {
@@ -117,7 +113,7 @@
   width: 0;
   height: 40px;
   border-style: solid;
-  border-width: 20px 0 20px 30px; /* Adjusted triangle size */
+  border-width: 20px 0 20px 30px;
   border-color: transparent transparent transparent #202020;
   transition: 100ms all ease;
   box-sizing: border-box;
@@ -133,7 +129,7 @@
 
 .playpause input[type="checkbox"]:checked + label {
   border-style: double;
-  border-width: 0px 0 0px 30px; /* Adjusted double bar width */
+  border-width: 0px 0 0px 30px; 
   border-color: transparent transparent transparent #202020;
 }
 
@@ -142,22 +138,21 @@
 }
 
 
-/* Responsive design adjustments */
 @media (max-width: 1024px) {
   .voiceCard {
-    width: calc(25% - 0.5rem); /* Adjusted width for 4 cards in a row */
+    width: calc(25% - 0.5rem);
   }
 }
 
 @media (max-width: 768px) {
   .voiceCard {
-    width: calc(33.333% - 0.5rem); /* Adjusted width for 3 cards in a row */
-  }
+    width: calc(33.333% - 0.5rem);
+}
 }
 
 @media (max-width: 480px) {
   .voiceCard {
-    width: 50%; /* 2 cards in a row */
+    width: 50%; 
   }
 }
 

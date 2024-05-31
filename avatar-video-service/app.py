@@ -9,14 +9,12 @@ import json
 def create_app():
     app = Flask(__name__)
 
-    # Eureka and ElevenLabs configuration
     eureka_server = "http://naming-server:8761/eureka"
     app_name = "avatar-video-service"
     app_port = 8900
   
     GOOEY_API_KEY='sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx'
 
-    # Initialize Eureka client
     eureka_client.init(
         eureka_server=eureka_server,
         app_name=app_name,
