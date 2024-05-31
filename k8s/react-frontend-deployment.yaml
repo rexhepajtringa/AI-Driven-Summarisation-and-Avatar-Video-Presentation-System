@@ -14,6 +14,9 @@ spec:
     spec:
       containers:
         - name: react-frontend
-          image: gcr.io/summarizereports/vite-react-frontend:v4
+          image: your-react-frontend-image
+          env:
+            - name: REACT_APP_API_GATEWAY_URL
+              value: "http://34.27.8.231:8765" # Update with the correct external IP
           ports:
             - containerPort: 80
