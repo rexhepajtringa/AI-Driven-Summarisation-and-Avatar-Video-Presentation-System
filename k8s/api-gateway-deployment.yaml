@@ -14,12 +14,23 @@ spec:
     spec:
       containers:
         - name: api-gateway
-          image: gcr.io/summarizereports/mmv-api-gateway:0.0.1-SNAPSHOT
-          ports:
-            - containerPort: 8765
+          image: trexhepaj/mmv-api-gateway:0.0.1-SNAPSHOT
           resources:
             limits:
               memory: "700Mi"
+          ports:
+            - containerPort: 8765
           env:
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://naming-server:8761/eureka/
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-gateway
+spec:
+  ports:
+    - port: 8765
+      targetPort: 8765
+  selector:
+    app: api-gateway

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: avatar-video-service
-          image: gcr.io/summarizereports/avatar-video-service:latest
+          image: trexhepaj/avatar-video-service:latest
           ports:
             - containerPort: 8900
           env:
@@ -25,14 +25,25 @@ spec:
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://naming-server:8761/eureka/
           volumeMounts:
-            - name: avatar-video-service-volume
-              mountPath: /app
-            - name: avatar-uploads-volume
-              mountPath: /app/uploads
+            - mountPath: /app
+              name: app
+            - mountPath: /app/uploads
+              name: avatar-uploads
       volumes:
-        - name: avatar-video-service-volume
+        - name: app
           hostPath:
-            path: /mnt/data/avatar-video-service # Adjust this path
-        - name: avatar-uploads-volume
+            path: /mnt/c/Users/user/Desktop/deritash/AI-Reports/avatar-video-service/app
+        - name: avatar-uploads
           hostPath:
-            path: /mnt/data/app/uploads # Adjust this path
+            path: /mnt/c/Users/user/Desktop/deritash/AI-Reports/avatar-video-service/uploads
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: avatar-video-service
+spec:
+  ports:
+    - port: 8900
+      targetPort: 8900
+  selector:
+    app: avatar-video-service

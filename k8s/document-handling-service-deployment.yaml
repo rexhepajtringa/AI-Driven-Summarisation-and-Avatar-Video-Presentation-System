@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: spring-cloud-config-server
+  name: document-handling-service
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: spring-cloud-config-server
+      app: document-handling-service
   template:
     metadata:
       labels:
-        app: spring-cloud-config-server
+        app: document-handling-service
     spec:
       containers:
-        - name: spring-cloud-config-server
-          image: trexhepaj/mmv-spring-cloud-config-server:0.0.1-SNAPSHOT
+        - name: document-handling-service
+          image: trexhepaj/mmv-document-handling-service:0.0.1-SNAPSHOT
           resources:
             limits:
               memory: "700Mi"
           ports:
-            - containerPort: 8888
+            - containerPort: 8080
           env:
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: http://naming-server:8761/eureka/
@@ -27,10 +27,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: spring-cloud-config-server
+  name: document-handling-service
 spec:
   ports:
-    - port: 8888
-      targetPort: 8888
+    - port: 8080
+      targetPort: 8080
   selector:
-    app: spring-cloud-config-server
+    app: document-handling-service

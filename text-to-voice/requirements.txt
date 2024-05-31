@@ -1,9 +1,6 @@
-Flask
-gTTS
-py_eureka_client
-Flask-Cors
-requests
-pytest
-pytest-mock
-pytest-flask
-requests-mock
+-load a public rsa key with alias and with no password
+-load a public dsa key with alias and with no password
+
+
+-encrypt rsa with no password 
+-verify dsa with no password

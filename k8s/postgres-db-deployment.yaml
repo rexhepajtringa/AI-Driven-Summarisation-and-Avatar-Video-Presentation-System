@@ -15,10 +15,10 @@ spec:
       containers:
         - name: postgres-db
           image: postgres:latest
-          ports:
-            - containerPort: 5432
           resources:
             limits:
+              memory: "1500Mi"
+            requests:
               memory: "1500Mi"
           env:
             - name: POSTGRES_DB
@@ -28,9 +28,20 @@ spec:
             - name: POSTGRES_PASSWORD
               value: "1234"
           volumeMounts:
-            - name: postgres-data
-              mountPath: /var/lib/postgresql/data
+            - mountPath: /var/lib/postgresql/data
+              name: postgres-data
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
-            claimName: postgres-data-pvc
+            claimName: postgres-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-db
+spec:
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres-db
