@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: naming-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: naming-server
+  template:
+    metadata:
+      labels:
+        app: naming-server
+    spec:
+      containers:
+        - name: naming-server
+          image: gcr.io/summarizereports/mmv-naming-server:0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 8761
+          resources:
+            limits:
+              memory: "700Mi"

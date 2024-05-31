@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: avatar-video-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: avatar-video-service
+  template:
+    metadata:
+      labels:
+        app: avatar-video-service
+    spec:
+      containers:
+        - name: avatar-video-service
+          image: gcr.io/summarizereports/avatar-video-service:latest
+          ports:
+            - containerPort: 8900
+          env:
+            - name: FLASK_APP
+              value: app.py
+            - name: FLASK_ENV
+              value: development
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://naming-server:8761/eureka/
+          volumeMounts:
+            - name: avatar-video-service-volume
+              mountPath: /app
+            - name: avatar-uploads-volume
+              mountPath: /app/uploads
+      volumes:
+        - name: avatar-video-service-volume
+          hostPath:
+            path: /mnt/data/avatar-video-service # Adjust this path
+        - name: avatar-uploads-volume
+          hostPath:
+            path: /mnt/data/app/uploads # Adjust this path

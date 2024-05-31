@@ -5,6 +5,7 @@ import styles from "./UserDashboard.module.css"; // Make sure the path is correc
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import { useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa"; // Import the trash icon
+import config from "config";
 
 interface Content {
   id: number;
@@ -44,7 +45,7 @@ const UserDashboard = () => {
   }, []);
 
   const fetchContent = async (contentType: "TEXT" | "AUDIO" | "VIDEO") => {
-    const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/type/${contentType}`;
+    const url = `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/user/${userId}/type/${contentType}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -66,7 +67,7 @@ const UserDashboard = () => {
   };
 
   const handleViewContent = async (content: Content) => {
-    const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/content/${content.id}`;
+    const url = `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/content/${content.id}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -114,7 +115,7 @@ const UserDashboard = () => {
     }
 
     try {
-      const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/content/${content.id}`;
+      const url = `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/user/${userId}/content/${content.id}`;
       const options = {
         method: "DELETE",
         headers: {
@@ -124,10 +125,6 @@ const UserDashboard = () => {
 
       const request = new Request(url, options);
       const response = await fetch(request);
-
-      // Check if the response is okay
-      if (!response.ok) console.log("Response status:", response.status);
-      console.log("Response:", response);
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -143,7 +140,6 @@ const UserDashboard = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Update the state based on content type
       if (contentType === "TEXT") {
         setSummaries((prev) => prev.filter((item) => item.id !== content.id));
       } else if (contentType === "AUDIO") {
@@ -193,7 +189,6 @@ const UserDashboard = () => {
     navigate("/"); // Redirect to the home page
   };
 
-  // Render the button dynamically based on content type
   const renderUseButton = (contentType: ContentType) => {
     let buttonText = "";
     switch (contentType) {

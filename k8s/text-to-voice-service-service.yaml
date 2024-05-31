@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: text-to-voice-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: text-to-voice-service
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000

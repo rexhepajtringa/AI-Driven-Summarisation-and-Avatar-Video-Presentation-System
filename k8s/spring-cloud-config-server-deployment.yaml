@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-cloud-config-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-cloud-config-server
+  template:
+    metadata:
+      labels:
+        app: spring-cloud-config-server
+    spec:
+      containers:
+        - name: spring-cloud-config-server
+          image: gcr.io/summarizereports/mmv-spring-cloud-config-server:0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 8888
+          resources:
+            limits:
+              memory: "700Mi"
+          env:
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://naming-server:8761/eureka/

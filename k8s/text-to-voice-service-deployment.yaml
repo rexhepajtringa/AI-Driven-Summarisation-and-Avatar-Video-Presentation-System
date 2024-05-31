@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: text-to-voice-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: text-to-voice-service
+  template:
+    metadata:
+      labels:
+        app: text-to-voice-service
+    spec:
+      containers:
+        - name: text-to-voice-service
+          image: gcr.io/summarizereports/text-to-voice:latest
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: "700Mi"
+          env:
+            - name: FLASK_APP
+              value: app.py
+            - name: FLASK_ENV
+              value: development
+            - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
+              value: http://naming-server:8761/eureka/
+          volumeMounts:
+            - name: text-to-voice-volume
+              mountPath: /app
+            - name: audio-files-volume
+              mountPath: /app/audio_files
+      volumes:
+        - name: text-to-voice-volume
+          hostPath:
+            path: /mnt/data/text-to-voice # Adjust this path
+        - name: audio-files-volume
+          hostPath:
+            path: /mnt/data/text-to-voice/audio_files # Adjust this path

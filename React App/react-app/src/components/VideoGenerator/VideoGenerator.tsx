@@ -12,6 +12,7 @@ import styles from "./VideoGenerator.module.css";
 import ReactPlayer from "react-player";
 import Cookies from "js-cookie";
 import { useGlobalContent } from "../Utils/GlobalContentContext"; // Adjust the import path
+import config from "config";
 
 const VideoGenerator = () => {
   const [selectedImage, setSelectedImage] = useState("");
@@ -75,7 +76,7 @@ const VideoGenerator = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:8765/TEXT-TO-VOICE-SERVICE/lip-sync",
+        `${config.API_GATEWAY_URL}/TEXT-TO-VOICE-SERVICE/lip-sync`,
         {
           method: "POST",
           body: formData,
@@ -118,7 +119,7 @@ const VideoGenerator = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+        `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/${userId}`,
         {
           method: "POST",
           headers: {
@@ -156,9 +157,8 @@ const VideoGenerator = () => {
                 boxShadow:
                   "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                 borderRadius: "10px",
-                backgroundColor:
-                  "rgba(255, 255, 255, 0.5)" /* Semi-transparent white background */,
-                padding: "20px" /* Adjust padding as needed */,
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                padding: "20px",
               }}
               className={`${
                 videoUrl ? "videoContainerExpanded" : "videoContainer"
@@ -247,7 +247,7 @@ const VideoGenerator = () => {
                                 const a = document.createElement("a");
                                 a.href = videoUrl;
                                 a.download =
-                                  videoTitle || "downloadedVideo.mp4"; // Default filename if title isn't set
+                                  videoTitle || "downloadedVideo.mp4";
                                 document.body.appendChild(a);
                                 a.click();
                                 document.body.removeChild(a);

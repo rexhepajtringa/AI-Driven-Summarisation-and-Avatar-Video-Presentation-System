@@ -5,6 +5,7 @@ import { AudioPlayer } from "react-audio-play"; // Make sure to import AudioPlay
 import Cookies from "js-cookie"; // Import js-cookie
 import { Button, Form, Col, Row, Spinner } from "react-bootstrap";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
+import config from "config";
 
 interface Voice {
   voice_id: string;
@@ -45,7 +46,7 @@ const VoiceSelector: React.FC = () => {
   useEffect(() => {
     const fetchVoices = async () => {
       const response = await fetch(
-        "http://localhost:8765/TEXT-TO-VOICE-SERVICE/voices"
+        `${config.API_GATEWAY_URL}/TEXT-TO-VOICE-SERVICE/voices`
       );
       const data = await response.json();
       setVoices(data);
@@ -79,7 +80,7 @@ const VoiceSelector: React.FC = () => {
       text: summaryText,
     };
 
-    fetch("http://localhost:8765/TEXT-TO-VOICE-SERVICE/synthesize-speech", {
+    fetch(`${config.API_GATEWAY_URL}/TEXT-TO-VOICE-SERVICE/synthesize-speech`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -159,7 +160,7 @@ const VoiceSelector: React.FC = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+          `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/${userId}`,
           {
             method: "POST",
             headers: {

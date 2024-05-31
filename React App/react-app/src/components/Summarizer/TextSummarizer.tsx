@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Row,
@@ -7,12 +7,13 @@ import {
   Button,
   Card,
   Alert,
+  Spinner,
 } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import Cookies from "js-cookie";
-import { Spinner } from "react-bootstrap";
+import config from "config";
 
 interface RangeExampleProps {
   summaryLength: string;
@@ -25,11 +26,9 @@ const RangeExample: React.FC<RangeExampleProps> = ({
 }) => {
   const summaryLengthOptions = ["very short", "short", "medium", "long"];
 
-  // Convert the descriptive value back to slider's numeric value for the UI
   const sliderValue = summaryLengthOptions.indexOf(summaryLength);
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Convert the slider's numeric value back to your descriptive value
     const newValue = summaryLengthOptions[parseInt(e.target.value)];
     setSummaryLength(newValue);
   };
@@ -38,9 +37,9 @@ const RangeExample: React.FC<RangeExampleProps> = ({
     <div>
       <Form.Label>Length of Summary</Form.Label>
       <Form.Range
-        min={0} // Minimum slider value
-        max={3} // Maximum slider value (for 4 positions)
-        value={sliderValue} // Current slider position
+        min={0}
+        max={3}
+        value={sliderValue}
         onChange={handleSliderChange}
         className="custom-slider"
       />
@@ -60,14 +59,12 @@ const TextSummarizer: React.FC = () => {
   const globalContext = useGlobalContent();
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check if globalContext is not null
   if (!globalContext) {
     throw new Error(
       "useGlobalContent must be used within a GlobalContentProvider"
     );
   }
 
-  // Now TypeScript knows globalContext is not null
   const { content, updateText } = globalContext;
 
   useEffect(() => {
@@ -88,7 +85,7 @@ const TextSummarizer: React.FC = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:8765/DOCUMENT-HANDLING-SERVICE/api/document/uploadPdf",
+          `${config.API_GATEWAY_URL}/DOCUMENT-HANDLING-SERVICE/api/document/uploadPdf`,
           {
             method: "POST",
             body: formData,
@@ -97,8 +94,8 @@ const TextSummarizer: React.FC = () => {
         if (!response.ok) {
           throw new Error("Failed to upload file");
         }
-        const data = await response.text(); // Use `.text()` instead of `.json()`
-        setInputText(data); // Directly set the text without assuming JSON structure
+        const data = await response.text();
+        setInputText(data);
       } catch (error) {
         console.error("Error uploading file:", error);
       }
@@ -153,7 +150,7 @@ const TextSummarizer: React.FC = () => {
 
       try {
         const response = await fetch(
-          "http://localhost:8765/SUMMARY-SERVICE/api/summarize",
+          `${config.API_GATEWAY_URL}/SUMMARY-SERVICE/api/summarize`,
           {
             method: "POST",
             headers: {
@@ -193,7 +190,6 @@ const TextSummarizer: React.FC = () => {
       return;
     }
 
-    // Convert the summary text to a Blob and treat it as a file
     const blob = new Blob([summaryText], { type: "text/plain" });
     const formData = new FormData();
     formData.append("file", blob, "summary.txt");
@@ -202,7 +198,7 @@ const TextSummarizer: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+        `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/${userId}`,
         {
           method: "POST",
           headers: {
@@ -218,7 +214,7 @@ const TextSummarizer: React.FC = () => {
       }
 
       setSaveStatus("Summary saved successfully!");
-      setTitle(""); // Optionally clear title after saving
+      setTitle("");
     } catch (error) {
       console.error("Error:", error);
       setSaveStatus("Failed to save summary.");
