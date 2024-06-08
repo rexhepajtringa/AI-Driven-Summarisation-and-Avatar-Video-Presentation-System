@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
-import styles from "./VoiceSelector.module.css"; 
-import "bootstrap/dist/css/bootstrap.min.css"; 
-import { AudioPlayer } from "react-audio-play"; 
-import Cookies from "js-cookie"; 
+import styles from "./VoiceSelector.module.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { AudioPlayer } from "react-audio-play";
+import Cookies from "js-cookie";
 import { Button, Form, Col, Row, Spinner } from "react-bootstrap";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
-import config from "config";
+
+const ELEVENLABS_API_KEY = "94b13cc597a918c00ed33c585d887e65";
+const ELEVENLABS_VOICES_ENDPOINT = "https://api.elevenlabs.io/v1/voices";
+const ELEVENLABS_TTS_ENDPOINT = "https://api.elevenlabs.io/v1/text-to-speech";
 
 interface Voice {
   voice_id: string;
@@ -18,24 +21,27 @@ const VoiceSelector: React.FC = () => {
   const [voices, setVoices] = useState<Voice[]>([]);
   const [currentPlaying, setCurrentPlaying] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null); 
+  const [selectedVoiceId, setSelectedVoiceId] = useState<string | null>(null);
   const audioRefs = useRef<{ [url: string]: HTMLAudioElement }>({});
   const voicesPerPage = 5;
   const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const [audioKey, setAudioKey] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState<boolean>(false); 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [audioTitle, setAudioTitle] = useState("");
   const globalContext = useGlobalContent();
 
   if (!globalContext) {
-    throw new Error(
-      "useGlobalContent must be used within a GlobalContentProvider"
-    );
+    throw new Error("useGlobalContent a GlobalContentProvider");
   }
 
   const { content } = globalContext;
   const summaryText = content.text;
+
+  const capitalizeLabel = (label: string | undefined) => {
+    if (!label) return "";
+    return label.charAt(0).toUpperCase() + label.slice(1);
+  };
 
   useEffect(() => {
     if (content.audio) {
@@ -45,12 +51,31 @@ const VoiceSelector: React.FC = () => {
 
   useEffect(() => {
     const fetchVoices = async () => {
-      const response = await fetch(
-        `${config.API_GATEWAY_URL}/TEXT-TO-VOICE-SERVICE/voices`
-      );
+      const response = await fetch(ELEVENLABS_VOICES_ENDPOINT, {
+        headers: {
+          "xi-api-key": ELEVENLABS_API_KEY,
+        },
+      });
       const data = await response.json();
-      setVoices(data);
-      data.forEach((voice: Voice) => {
+
+      // Simplify the description creation process
+      const simplifyVoices = data.voices.map((voice: any) => {
+        const labels = voice.labels || {};
+        return {
+          ...voice,
+          description: [
+            capitalizeLabel(labels.accent),
+            capitalizeLabel(labels.gender),
+            capitalizeLabel(labels.age),
+            (capitalizeLabel(labels["use case"]) + " Use Case").trim(),
+          ]
+            .filter(Boolean)
+            .join(", "),
+        };
+      });
+
+      setVoices(simplifyVoices);
+      simplifyVoices.forEach((voice: Voice) => {
         const audio = new Audio(voice.preview_url);
         audio.addEventListener("ended", () => setCurrentPlaying(null));
         audioRefs.current[voice.preview_url] = audio;
@@ -72,17 +97,22 @@ const VoiceSelector: React.FC = () => {
       return;
     }
 
-    setIsLoading(true); 
+    setIsLoading(true);
 
     const postData = {
-      voice_id: voiceId,
       text: summaryText,
+      model_id: "eleven_monolingual_v1",
+      voice_settings: {
+        stability: 0.5,
+        similarity_boost: 0.5,
+      },
     };
 
-    fetch(`${config.API_GATEWAY_URL}/TEXT-TO-VOICE-SERVICE/synthesize-speech`, {
+    fetch(`${ELEVENLABS_TTS_ENDPOINT}/${voiceId}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        "xi-api-key": ELEVENLABS_API_KEY,
       },
       body: JSON.stringify(postData),
     })
@@ -95,7 +125,7 @@ const VoiceSelector: React.FC = () => {
       .then((blob) => {
         const audioURL = URL.createObjectURL(blob);
         setAudioSrc(audioURL);
-        setAudioKey((prevKey) => prevKey + 1); 
+        setAudioKey((prevKey) => prevKey + 1);
         globalContext.updateAudio(audioURL);
       })
       .catch((error) => {
@@ -159,7 +189,7 @@ const VoiceSelector: React.FC = () => {
 
       try {
         const response = await fetch(
-          `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/${userId}`,
+          `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
           {
             method: "POST",
             headers: {
@@ -175,7 +205,7 @@ const VoiceSelector: React.FC = () => {
         }
 
         alert("Audio content saved successfully!");
-        setAudioTitle(""); 
+        setAudioTitle("");
       } catch (error) {
         console.error("Error saving audio content:", error);
       }
@@ -273,10 +303,10 @@ const VoiceSelector: React.FC = () => {
           <Row className="justify-content-center">
             <Col md={12} className="d-flex flex-column align-items-center">
               <AudioPlayer
-                key={audioKey} 
+                key={audioKey}
                 style={{ margin: "auto", padding: "2em" }}
                 className={styles.customstyle}
-                src={audioSrc} 
+                src={audioSrc}
               />
               <Form.Control
                 type="text"

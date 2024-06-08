@@ -28,7 +28,7 @@ spec:
             - name: EUREKA_CLIENT_SERVICEURL_DEFAULTZONE
               value: "http://naming-server:8761/eureka/"
             - name: GOOGLE_APPLICATION_CREDENTIALS
-              value: "/mnt/config/summarizereports-f37e9f0f79bb.json"
+              value: "/etc/gcs/key.json"
             - name: SPRING_DATASOURCE_URL
               value: "jdbc:postgresql://postgres-db:5432/users"
             - name: SPRING_DATASOURCE_USERNAME
@@ -41,18 +41,16 @@ spec:
               value: "true"
             - name: SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL
               value: "true"
+            - name: SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT
+              value: "org.hibernate.dialect.PostgreSQLDialect"
           volumeMounts:
-            - mountPath: /mnt/config
-              name: config
-              subPath: summarizereports-f37e9f0f79bb.json
-            - mountPath: /app/tmp
-              name: app-tmp
+            - name: gcs-key-volume
+              mountPath: /etc/gcs
+              readOnly: true
       volumes:
-        - name: config
-          configMap:
-            name: summarizereports-config
-        - name: app-tmp
-          emptyDir: {}
+        - name: gcs-key-volume
+          secret:
+            secretName: gcs-key
 ---
 apiVersion: v1
 kind: Service

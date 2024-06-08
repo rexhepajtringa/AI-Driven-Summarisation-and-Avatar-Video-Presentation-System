@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import config from "config";
+import Cookies from "js-cookie";
 
 interface AuthFormProps {
   isSignUp: boolean;
@@ -13,16 +13,14 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onLoginSuccess }) => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const API_GATEWAY_URL = config.API_GATEWAY_URL;
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setSuccess("");
 
     const endpoint = isSignUp
-      ? `${API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/api/v1/auth/register`
-      : `${API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/api/v1/auth/login`;
+      ? `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/api/v1/auth/register`
+      : `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/api/v1/auth/login`;
 
     const payload = isSignUp
       ? JSON.stringify({ username, email, password })
@@ -40,6 +38,11 @@ const AuthForm: React.FC<AuthFormProps> = ({ isSignUp, onLoginSuccess }) => {
       const data = await response.json();
       if (response.ok) {
         setSuccess("Operation successful!");
+
+        // Save userId and token in cookies
+        Cookies.set("userId", data.userId);
+        Cookies.set("token", data.token);
+
         if (onLoginSuccess) onLoginSuccess();
       } else {
         setError(data.message || "Failed to complete the operation");

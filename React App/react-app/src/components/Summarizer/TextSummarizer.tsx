@@ -13,7 +13,6 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./txtsum.css";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import Cookies from "js-cookie";
-import config from "config";
 
 interface RangeExampleProps {
   summaryLength: string;
@@ -85,7 +84,7 @@ const TextSummarizer: React.FC = () => {
 
       try {
         const response = await fetch(
-          `${config.API_GATEWAY_URL}/DOCUMENT-HANDLING-SERVICE/api/document/uploadPdf`,
+          `http://34.66.126.138:8765/DOCUMENT-HANDLING-SERVICE/api/document/uploadPdf`,
           {
             method: "POST",
             body: formData,
@@ -150,7 +149,7 @@ const TextSummarizer: React.FC = () => {
 
       try {
         const response = await fetch(
-          `${config.API_GATEWAY_URL}/SUMMARY-SERVICE/api/summarize`,
+          `http://34.66.126.138:8765/SUMMARY-SERVICE/api/summarize`,
           {
             method: "POST",
             headers: {
@@ -198,7 +197,7 @@ const TextSummarizer: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/${userId}`,
+        `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
         {
           method: "POST",
           headers: {

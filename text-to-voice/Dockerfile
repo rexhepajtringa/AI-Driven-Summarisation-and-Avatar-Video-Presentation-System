@@ -1,31 +1,24 @@
-In recent years, there has a tendency in the software engineering community towards cloud computing. Cloud platforms
-are gaining mainstream adoption as the preferred delivery and
-operating model for modern applications by several companies
-like Amazon, Microsoft and IBM [1].
+# Use the official Python image from the Docker Hub
+FROM python:3.9-slim
 
-The changing infrastructural circumstances lead to architectural styles that take advantage of the opportunities given
-by cloud infrastructures. An architectural style that has become more relevant in the last years and that allows taking
-advantage of the benefits obtained with cloud computing is
-the Microservices Architecture (MSA) [2].
+# Set the working directory
+WORKDIR /app
 
+# Copy the requirements file into the container
+COPY requirements.txt /app/
 
-Monolithic Architecture (MA), instead, was the traditional
-approach to software development, used in the past by large
-companies like Amazon and Ebay. In MA, the functions are
-encapsulated into a single application. Monolith application, if
-not complicated, have their own strength, for instance, easiness of development, testing and deployment. However, when the
-application tends to become more complicated, the monolith
-structure grows in size, becoming a large, hard to manage and
-scale piece of software [6]. 
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
+# Copy the rest of the working directory contents into the container
+COPY . /app
 
-of development, testing and deployment. However, when the
-application tends to become more complicated, the monolith
-structure grows in size, becoming a large, hard to manage and
-scale piece of software [6].
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
 
+# Define environment variable
+ENV FLASK_APP=app.py
+ENV FLASK_ENV=development
 
-of development, testing and deployment. However, when the
-application tends to become more complicated, the monolith
-structure grows in size, becoming a large, hard to manage and
-scale piece of software [6].
+# Run app.py when the container launches
+CMD ["flask", "run", "--host=0.0.0.0"]

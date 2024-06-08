@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: react-frontend
+  annotations:
+    kubernetes.io/change-cause: "Updated at 1" # Dummy annotation to force a rollout
 spec:
   replicas: 1
   selector:
@@ -15,11 +17,9 @@ spec:
       containers:
         - name: react-frontend
           image: trexhepaj/vite-react-frontend:latest
+          imagePullPolicy: Always # Ensures the latest image is always pulled
           ports:
             - containerPort: 80
-          env:
-            - name: REACT_APP_API_GATEWAY_URL
-              value: "http://api-gateway:8765"
 ---
 apiVersion: v1
 kind: Service

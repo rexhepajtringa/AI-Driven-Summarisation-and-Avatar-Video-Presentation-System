@@ -15,6 +15,7 @@ spec:
       containers:
         - name: document-handling-service
           image: trexhepaj/mmv-document-handling-service:0.0.1-SNAPSHOT
+          imagePullPolicy: Always
           resources:
             limits:
               memory: "700Mi"

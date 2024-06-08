@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { ListGroup, Tab, Nav, Modal, Card } from "react-bootstrap";
 import Cookies from "js-cookie";
-import styles from "./UserDashboard.module.css"; 
+import styles from "./UserDashboard.module.css";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import { useNavigate } from "react-router-dom";
-import { FaTrash } from "react-icons/fa"; 
-import config from "config";
+import { FaTrash } from "react-icons/fa";
 
 interface Content {
   id: number;
@@ -23,7 +22,7 @@ const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalContentType, setModalContentType] = useState("");
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const globalContent = useGlobalContent();
 
@@ -45,7 +44,7 @@ const UserDashboard = () => {
   }, []);
 
   const fetchContent = async (contentType: "TEXT" | "AUDIO" | "VIDEO") => {
-    const url = `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/user/${userId}/type/${contentType}`;
+    const url = `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/type/${contentType}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -67,7 +66,7 @@ const UserDashboard = () => {
   };
 
   const handleViewContent = async (content: Content) => {
-    const url = `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/content/${content.id}`;
+    const url = `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/content/${content.id}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -82,7 +81,7 @@ const UserDashboard = () => {
         const textContent = await response.text();
         setModalContent(textContent);
         setModalContentType("TEXT");
-        globalContent.updateText(textContent); 
+        globalContent.updateText(textContent);
       } else if (
         content.contentType === "AUDIO" ||
         content.contentType === "VIDEO"
@@ -115,7 +114,7 @@ const UserDashboard = () => {
     }
 
     try {
-      const url = `${config.API_GATEWAY_URL}/USER-MANAGEMENT-SERVICE/content/user/${userId}/content/${content.id}`;
+      const url = `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/content/${content.id}`;
       const options = {
         method: "DELETE",
         headers: {
@@ -186,7 +185,7 @@ const UserDashboard = () => {
       ...prevState,
       [type.toLowerCase()]: contentData,
     }));
-    navigate("/"); 
+    navigate("/");
   };
 
   const renderUseButton = (contentType: ContentType) => {
