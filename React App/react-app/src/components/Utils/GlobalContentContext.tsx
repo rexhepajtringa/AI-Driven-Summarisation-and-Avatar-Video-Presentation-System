@@ -10,17 +10,16 @@ interface GlobalContentContextProps {
   content: ContentState;
   setContent: React.Dispatch<React.SetStateAction<ContentState>>;
   resetContent: () => void;
-  updateText: (text: string) => void; // Add this method
-  updateAudio: (audio: string) => void; // Add this method
-  updateVideo: (video: string) => void; // Add this method
+  updateText: (text: string) => void;
+  updateAudio: (audio: string) => void; 
+  updateVideo: (video: string) => void;
 }
 
-// Create a context with a default value
+
 const GlobalContentContext = createContext<GlobalContentContextProps | null>(
   null
 );
 
-// Export the hook for using this context
 export const useGlobalContent = () => {
   const context = useContext(GlobalContentContext);
   if (!context) {
@@ -31,7 +30,6 @@ export const useGlobalContent = () => {
   return context;
 };
 
-// Type the children prop explicitly
 interface GlobalContentProviderProps {
   children: ReactNode;
 }
@@ -61,9 +59,7 @@ export const GlobalContentProvider: React.FC<GlobalContentProviderProps> = ({
     setContent((prevState) => ({ ...prevState, video }));
   };
 
-  // const resetContent = () => {
-  //   setContent({ text: "", audio: "", video: "" });
-  // };
+
 
   return (
     <GlobalContentContext.Provider

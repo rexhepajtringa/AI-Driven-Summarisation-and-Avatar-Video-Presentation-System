@@ -70,7 +70,7 @@ const App: React.FC = () => {
                   </TextProvider>
                 ) : (
                   <HomePage />
-                ) // Show HomePage if not logged in
+                ) 
               }
             />
             <Route path="/user-dashboard" element={<UserDashboard />} />

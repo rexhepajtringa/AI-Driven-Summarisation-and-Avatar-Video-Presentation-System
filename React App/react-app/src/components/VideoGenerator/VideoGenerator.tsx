@@ -11,10 +11,13 @@ import {
 import styles from "./VideoGenerator.module.css";
 import ReactPlayer from "react-player";
 import Cookies from "js-cookie";
-import { useGlobalContent } from "../Utils/GlobalContentContext"; // Adjust the import path
+import { useGlobalContent } from "../Utils/GlobalContentContext";
+
+const GOOEY_API_KEY = "sk-XBO3A62bORJyEOUuYVmAgDwoG9E9Jr03t9kKEAxB9hg18tcx";
+const GOOEY_API_URL = "https://api.gooey.ai/v2/Lipsync/form/";
 
 const VideoGenerator = () => {
-  const [selectedImage, setSelectedImage] = useState("");
+  const [selectedImage, setSelectedImage] = useState<string>("");
   const defaultImages = [
     "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=934&q=80",
     "https://images.generated.photos/EO4QtL4qFG9OHQSmDcSvkYQi6D4F5a2fyz_9SXTpOyw/rs:fit:256:256/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/OTU1NDQ3LmpwZw.jpg",
@@ -23,9 +26,9 @@ const VideoGenerator = () => {
     "https://images.pexels.com/photos/2169434/pexels-photo-2169434.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1",
   ];
 
-  const [videoUrl, setVideoUrl] = useState("");
-  const [videoTitle, setVideoTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [videoUrl, setVideoUrl] = useState<string>("");
+  const [videoTitle, setVideoTitle] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const globalContext = useGlobalContent();
 
   if (!globalContext) {
@@ -64,36 +67,45 @@ const VideoGenerator = () => {
       return;
     }
 
-    setIsLoading(true); // Start loading
-
+    setIsLoading(true);
     const audioBlob = await urlToBlob(audio);
     const imageBlob = await urlToBlob(selectedImage);
 
     const formData = new FormData();
-    formData.append("image", imageBlob, "image.jpg");
-    formData.append("audio", audioBlob, "audio.mp3");
+    formData.append("input_face", imageBlob, "image.jpg");
+    formData.append("input_audio", audioBlob, "audio.mp3");
+
+    const payload = {
+      face_padding_top: 0,
+      face_padding_bottom: 18,
+      face_padding_left: 0,
+      face_padding_right: 0,
+      sadtalker_settings: null,
+      selected_model: "Wav2Lip",
+    };
+    formData.append("json", JSON.stringify(payload));
 
     try {
-      const response = await fetch(
-        "http://localhost:8765/TEXT-TO-VOICE-SERVICE/lip-sync",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(GOOEY_API_URL, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${GOOEY_API_KEY}`,
+        },
+        body: formData,
+      });
 
       const data = await response.json();
 
-      if (data.output_video_url) {
-        setVideoUrl(data.output_video_url);
-        updateVideo(data.output_video_url);
+      if (data.output && data.output.output_video) {
+        setVideoUrl(data.output.output_video);
+        updateVideo(data.output.output_video);
       } else {
         throw new Error("No video URL in response");
       }
     } catch (error) {
       console.error("Error:", error);
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false);
     }
   };
 
@@ -118,7 +130,7 @@ const VideoGenerator = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
+        `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/${userId}`,
         {
           method: "POST",
           headers: {
@@ -134,7 +146,7 @@ const VideoGenerator = () => {
       }
 
       alert("Video content saved successfully!");
-      setVideoTitle(""); // Clear title after saving
+      setVideoTitle("");
     } catch (error) {
       console.error("Error saving video content:", error);
     }
@@ -156,9 +168,8 @@ const VideoGenerator = () => {
                 boxShadow:
                   "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
                 borderRadius: "10px",
-                backgroundColor:
-                  "rgba(255, 255, 255, 0.5)" /* Semi-transparent white background */,
-                padding: "20px" /* Adjust padding as needed */,
+                backgroundColor: "rgba(255, 255, 255, 0.5)",
+                padding: "20px",
               }}
               className={`${
                 videoUrl ? "videoContainerExpanded" : "videoContainer"
@@ -247,7 +258,7 @@ const VideoGenerator = () => {
                                 const a = document.createElement("a");
                                 a.href = videoUrl;
                                 a.download =
-                                  videoTitle || "downloadedVideo.mp4"; // Default filename if title isn't set
+                                  videoTitle || "downloadedVideo.mp4";
                                 document.body.appendChild(a);
                                 a.click();
                                 document.body.removeChild(a);

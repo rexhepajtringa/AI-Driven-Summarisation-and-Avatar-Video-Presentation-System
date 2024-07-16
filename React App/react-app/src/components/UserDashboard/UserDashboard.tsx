@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { ListGroup, Tab, Nav, Modal, Card } from "react-bootstrap";
 import Cookies from "js-cookie";
-import styles from "./UserDashboard.module.css"; // Make sure the path is correct
+import styles from "./UserDashboard.module.css";
 import { useGlobalContent } from "../Utils/GlobalContentContext";
 import { useNavigate } from "react-router-dom";
-import { FaTrash } from "react-icons/fa"; // Import the trash icon
+import { FaTrash } from "react-icons/fa";
 
 interface Content {
   id: number;
@@ -22,7 +22,7 @@ const UserDashboard = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalContent, setModalContent] = useState("");
   const [modalContentType, setModalContentType] = useState("");
-  const navigate = useNavigate(); // Hook to redirect
+  const navigate = useNavigate();
 
   const globalContent = useGlobalContent();
 
@@ -44,7 +44,7 @@ const UserDashboard = () => {
   }, []);
 
   const fetchContent = async (contentType: "TEXT" | "AUDIO" | "VIDEO") => {
-    const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/type/${contentType}`;
+    const url = `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/type/${contentType}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -66,7 +66,7 @@ const UserDashboard = () => {
   };
 
   const handleViewContent = async (content: Content) => {
-    const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/content/${content.id}`;
+    const url = `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/content/${content.id}`;
     const headers = {
       Authorization: `Bearer ${token}`,
     };
@@ -81,7 +81,7 @@ const UserDashboard = () => {
         const textContent = await response.text();
         setModalContent(textContent);
         setModalContentType("TEXT");
-        globalContent.updateText(textContent); // Update global context
+        globalContent.updateText(textContent);
       } else if (
         content.contentType === "AUDIO" ||
         content.contentType === "VIDEO"
@@ -90,7 +90,7 @@ const UserDashboard = () => {
         const url = URL.createObjectURL(blob);
         setModalContent(url);
         setModalContentType(content.contentType);
-        globalContent.updateAudio(url); // Update global context
+        globalContent.updateAudio(url);
       } else {
         throw new Error("Unsupported content type");
       }
@@ -114,7 +114,7 @@ const UserDashboard = () => {
     }
 
     try {
-      const url = `http://localhost:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/content/${content.id}`;
+      const url = `http://34.66.126.138:8765/USER-MANAGEMENT-SERVICE/content/user/${userId}/content/${content.id}`;
       const options = {
         method: "DELETE",
         headers: {
@@ -124,10 +124,6 @@ const UserDashboard = () => {
 
       const request = new Request(url, options);
       const response = await fetch(request);
-
-      // Check if the response is okay
-      if (!response.ok) console.log("Response status:", response.status);
-      console.log("Response:", response);
 
       if (!response.ok) {
         if (response.status === 403) {
@@ -143,7 +139,6 @@ const UserDashboard = () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Update the state based on content type
       if (contentType === "TEXT") {
         setSummaries((prev) => prev.filter((item) => item.id !== content.id));
       } else if (contentType === "AUDIO") {
@@ -190,10 +185,9 @@ const UserDashboard = () => {
       ...prevState,
       [type.toLowerCase()]: contentData,
     }));
-    navigate("/"); // Redirect to the home page
+    navigate("/");
   };
 
-  // Render the button dynamically based on content type
   const renderUseButton = (contentType: ContentType) => {
     let buttonText = "";
     switch (contentType) {

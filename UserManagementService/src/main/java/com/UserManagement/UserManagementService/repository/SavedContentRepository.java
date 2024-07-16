@@ -13,5 +13,7 @@ public interface SavedContentRepository extends JpaRepository<SavedContent, Long
     List<SavedContent> findAllByUserIdAndContentType(Long userId, ContentType contentType);
 
     Optional<SavedContent> findByUserIdAndId(Long userId, Long id);
+    
+    Optional<SavedContent> findById(Long id);
 
 }

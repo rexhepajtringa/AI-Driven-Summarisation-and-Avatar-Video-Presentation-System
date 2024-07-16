@@ -8,7 +8,7 @@
 }
 
 .homeInner {
-  width: 87.125rem; /* Consider if this needs to be so wide, or if it should scale with % or vw units on smaller screens */
+  width: 87.125rem; 
   flex-direction: row;
   justify-content: center;
   margin: auto;
@@ -16,35 +16,32 @@
 }
 .home {
   width: 100%;
-  min-height: 100vh; /* Ensures that the .home div takes up at least the full height of the viewport */
+  min-height: 100vh; 
   position: relative;
   background: linear-gradient(180deg, #fff, #7488ba);
   overflow: hidden;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 0 0 20.25rem; /* You might want to adjust this padding if it's creating too much space at the bottom */
+  padding: 0 0 20.25rem;
   gap: 2rem;
   letter-spacing: normal;
 }
 
 
-/* Adjust the gap for larger screens if necessary */
 @media screen and (min-width: 750px) {
   .home {
-    gap: 3rem; /* Find a balance that works for larger screens */
+    gap: 3rem; 
   }
 }
 
 @media screen and (max-width: 750px) {
   .home {
-    /* Adjusted gap to reduce space as screen gets smaller */
     gap: 2rem;
   }
 }
 
 @media screen and (max-width: 450px) {
   .home {
-    /* Further reduce the gap for very small screens */
     gap: 1rem;
   }
 }

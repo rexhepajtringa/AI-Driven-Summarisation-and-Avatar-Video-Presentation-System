@@ -1,0 +1,15 @@
+User Manual
+You can access the application in two different ways:
+
+Method 1: Via Online Deployment
+Open your web browser.
+Go to the link: http://34.71.41.214/
+This link will take you directly to the deployed application.
+
+Method 2: Local Deployment Using Docker
+Docker must be installed and running on your system.
+Navigate to the Code directory.
+Double-click the dockercompose.bat file to run it. This will build and start all the necessary services using Docker Compose.
+Open your web browser and go to http://localhost:3000 to access the application.
+
+(If the application does not start after clicking the dockercompose.bat file, ensure that Docker is running)
